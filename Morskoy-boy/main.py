@@ -9,7 +9,7 @@ class ConstructorFields:
     __lbl = ["tk.label"]
     __buttons = []
     __ship = [(int, int)]
-    __number_ships = 10
+    __number_ships = 0
     __window = ["tk.Tk()"]
     __real_field = ["zeros and Ships"]
 

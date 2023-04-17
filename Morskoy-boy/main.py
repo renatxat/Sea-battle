@@ -9,7 +9,7 @@ class ConstructorFields:
     __lbl = ["tk.label"]
     __buttons = []
     __ship = [(int, int)]
-    __number_ships = 0
+    __number_ships = 10
     __window = ["tk.Tk()"]
     __real_field = ["zeros and Ships"]
 
@@ -33,6 +33,9 @@ class ConstructorFields:
         self.__window.mainloop()
 
     def tune_window(self):
+        x = (self.__window.winfo_screenwidth() - self.__window.winfo_reqwidth()) / 2
+        y = (self.__window.winfo_screenheight() - self.__window.winfo_reqheight()) / 2
+        self.__window.wm_geometry("+%d+%d" % (x, y))
         self.__window.resizable(width=False, height=False)
         self.__window.title("Морской Бой")
         self.__window.tk.call("wm", "iconphoto", self.__window._w, tk.PhotoImage(file="main_icon.png"))
@@ -97,7 +100,8 @@ class ConstructorFields:
                 if len(config.ship_sizes) == self.__number_ships:
                     self.__lbl['text'] = "генерируем поле"
                 else:
-                    self.__lbl['text'] = f"расположите {config.ship_sizes[self.__number_ships]}-х палубный корабль"
+                    self.__lbl['text'] = f"расположите {config.ship_sizes[self.__number_ships]}" + "-х" * (
+                            config.ship_sizes[self.__number_ships] != 1) + " палубный корабль"
                 real_ship = Ship(self.__ship)
                 for (x, y) in self.__ship:
                     self.__real_field[x][y] = real_ship

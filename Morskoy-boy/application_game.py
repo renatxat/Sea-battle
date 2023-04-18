@@ -79,7 +79,6 @@ class Application:
             if messagebox.showinfo(title="Чел, хорош!", message="Вы победили!"):
                 self.__window.destroy()
         else:
-            self.__bot_field.take_a_shot()
             self.__field.update(*self.__bot_field.get_last_shot())
             if messagebox.showinfo(title="Трансорфмеры, общий сбор на НК", message="Восстание машин началось"):
                 self.__window.destroy()

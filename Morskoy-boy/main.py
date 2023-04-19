@@ -9,12 +9,13 @@ class ConstructorFields:
     __lbl = ["tk.label"]
     __buttons = []
     __ship = [(int, int)]
-    __number_ships = 9
+    __number_ships = 0
     __window = ["tk.Tk()"]
     __real_field = ["zeros and Ships"]
 
     def __init__(self):
-        self.__real_field = [[0 for _ in range(config.column)] for _ in range(config.row)]
+        self.__real_field = [
+            [0 for _ in range(config.column)] for _ in range(config.row)]
         self.__ship = []
         self.__window = tk.Tk()
         button1 = tk.Button(self.__window, text="Играть с ботом", command=self.create_creation_window,
@@ -31,12 +32,15 @@ class ConstructorFields:
         self.__window.mainloop()
 
     def tune_window(self):
-        x = (self.__window.winfo_screenwidth() - self.__window.winfo_reqwidth()) / 2
-        y = (self.__window.winfo_screenheight() - self.__window.winfo_reqheight()) / 2
+        x = (self.__window.winfo_screenwidth() -
+             self.__window.winfo_reqwidth()) / 2
+        y = (self.__window.winfo_screenheight() -
+             self.__window.winfo_reqheight()) / 2
         self.__window.wm_geometry("+%d+%d" % (x, y))
         self.__window.resizable(width=False, height=False)
         self.__window.title("Морской Бой")
-        self.__window.tk.call("wm", "iconphoto", self.__window._w, tk.PhotoImage(file="main_icon.png"))
+        self.__window.tk.call(
+            "wm", "iconphoto", self.__window._w, tk.PhotoImage(file="main_icon.png"))
         self.__window.protocol("WM_DELETE_self.window", self.__on_closing)
 
     def create_creation_window(self):
@@ -65,10 +69,10 @@ class ConstructorFields:
                 canvas.create_window((j * config.size_of_cell, i * config.size_of_cell),
                                      anchor="nw", window=self.__buttons[i][j])
         self.__lbl = tk.Label(self.__window,
-                              font=("Comic Sans MS", 13, "bold"),
-                              text=f"расположите 4-х палубный корабль", justify='center',
+                              font=("Comic Sans MS", 11, "bold"),
+                              text=f"расположите 4-х палубный корабль", justify="center",
                               borderwidth=1, relief="solid")
-        self.__lbl.pack(fill='both', anchor="s")
+        self.__lbl.pack(fill="both", anchor="s")
         canvas.pack(anchor="w")
         self.__window.after_idle(self.loop, 0)  # start endless __loop
 
@@ -78,7 +82,8 @@ class ConstructorFields:
 
     def add(self, x, y):
         self.__ship.append((x, y))
-        self.__buttons[x][y].config(command=0, bg="slateblue", state="disabled")
+        self.__buttons[x][y].config(
+            command=0, bg="slateblue", state="disabled")
 
     def update_ships(self):
         if len(config.ship_sizes) == self.__number_ships:
@@ -96,15 +101,16 @@ class ConstructorFields:
             else:
                 self.__number_ships += 1
                 if len(config.ship_sizes) == self.__number_ships:
-                    self.__lbl['text'] = "генерируем поле"
+                    self.__lbl["text"] = "генерируем поле"
                 else:
-                    self.__lbl['text'] = f"расположите {config.ship_sizes[self.__number_ships]}" + "-х" * (
+                    self.__lbl["text"] = f"расположите {config.ship_sizes[self.__number_ships]}" + "-х" * (
                             config.ship_sizes[self.__number_ships] != 1) + " палубный корабль"
                 real_ship = Ship(self.__ship)
                 for (x, y) in self.__ship:
                     self.__real_field[x][y] = real_ship
                 for (x, y) in real_ship.get_environment():
-                    self.__buttons[x][y].config(command=0, bg="powderblue", state='disabled')
+                    self.__buttons[x][y].config(
+                        command=0, bg="powderblue", state="disabled")
                 self.__ship = []
 
     def check_correct_ship(self):

@@ -32,18 +32,27 @@ class BattlefieldPlayer(Battlefield):
             for j in range(config.column + 1):
                 self.__labels[i][j].pack(expand=False, side="top")
                 self.__canvas.create_window(
-                    (j * config.size_of_cell + config.column * config.size_of_cell, i * config.size_of_cell),
+                    (j * config.size_of_cell + config.column *
+                     config.size_of_cell, i * config.size_of_cell),
                     anchor="nw", window=self.__labels[i][j])
 
     def view(self):
-        lbl = tk.Label(self.__canvas,
-                       font=("Comic Sans MS", 15, "bold"),
-                       text="Ваше поле", justify="center",
-                       borderwidth=1, relief="solid",
-                       width=(config.column + 1) * 3)
-        lbl.pack(fill="both", anchor="s")
-        self.__canvas.create_window((config.column * config.size_of_cell, config.row * config.size_of_cell),
-                                    anchor="nw", window=lbl)
+        label_frame = tk.Frame(self.__canvas,
+                               width=(2 * config.column + 1) * config.size_of_cell // 3,
+                               height=config.size_of_cell,
+                               bg="white")
+        label_frame.pack_propagate(False)
+        lbl = tk.Label(label_frame,
+                       relief="solid",
+                       font=("Comic Sans MS", 13, "bold"),
+                       text="Ваше поле",
+                       justify="center",
+                       borderwidth=1)
+        lbl.pack(fill="both", expand=True)
+        self.__canvas.create_window(((2 * config.column + 1) * config.size_of_cell -
+                                     ((2 * config.column + 1) * config.size_of_cell // 3),
+                                     config.row * config.size_of_cell),
+                                    anchor="nw", window=label_frame)
         self.__create_labels()
 
     def update(self, x, y):
@@ -51,8 +60,9 @@ class BattlefieldPlayer(Battlefield):
         self._shot(x, y)
         for x in range(config.row):
             for y in range(config.column):
-                if self._field[x][y] == 'hit' and self.__labels[x][y + 1]['image'] == '':
-                    self.__labels[x][y + 1].config(image=self.__image_cross, relief='flat')
+                if self._field[x][y] == "hit" and self.__labels[x][y + 1]["image"] == "":
+                    self.__labels[x][y +
+                                     1].config(image=self.__image_cross, relief="flat")
 
-                if self._field[x][y] == 'miss' and self.__labels[x][y + 1]['image'] == '':
+                if self._field[x][y] == "miss" and self.__labels[x][y + 1]["image"] == "":
                     self.__labels[x][y + 1].config(image=self.__image_dot)

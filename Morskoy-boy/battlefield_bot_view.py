@@ -7,9 +7,12 @@ from ship import Ship
 class BattlefieldBotOpponent(BattlefieldOpponent):
 
     def __init__(self, canvas):
-        probability_field = [(x, y) for x in range(config.row) for y in range(config.column)]
-        self.dict_index_elem = {(x, y): x * config.column + y for x in range(config.row) for y in range(config.column)}
-        real_field = [[0 for _ in range(config.column)] for _ in range(config.row)]
+        probability_field = [(x, y) for x in range(config.row)
+                             for y in range(config.column)]
+        self.dict_index_elem = {
+            (x, y): x * config.column + y for x in range(config.row) for y in range(config.column)}
+        real_field = [[0 for _ in range(config.column)]
+                      for _ in range(config.row)]
         number_ships = 0
         while number_ships != len(config.ship_sizes):
             while True:
@@ -24,7 +27,6 @@ class BattlefieldBotOpponent(BattlefieldOpponent):
                         ship.append((x, y))
                         x, y = x + vertical, y + 1 - vertical
                     real_ship = Ship(ship)
-                    print(ship)
                     for (x, y) in ship:
                         index = self.dict_index_elem[(x, y)]
                         if index == -2:
@@ -61,7 +63,8 @@ class BattlefieldBotOpponent(BattlefieldOpponent):
             if not (0 <= x < config.row and 0 <= y < config.column):
                 return False
             for counter in range(9):
-                ship_and_environment.append((x + counter % 3 - 1, y + counter // 3 - 1))
+                ship_and_environment.append(
+                    (x + counter % 3 - 1, y + counter // 3 - 1))
             x, y = x + vertical, y + 1 - vertical
 
         for (x, y) in ship_and_environment:

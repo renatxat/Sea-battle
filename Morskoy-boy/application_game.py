@@ -35,20 +35,30 @@ class Application:
     def __draw_boards(self):
         self.__field.view()
         self.__foreign_field.view()
-        self.__label_turn = tk.Label(self.__canvas,
-                                     font=("Comic Sans MS", 15, "bold"),
-                                     text="<--- Ходите ", fg="lime",
-                                     borderwidth=1, relief="solid")
-        self.__label_turn.pack(fill="both", anchor="s")
-        self.__canvas.create_window(((config.column - 2) * config.size_of_cell - 10,
+        label_frame = tk.Frame(self.__canvas,
+                               width=(2 * config.column + 1) * config.size_of_cell - 2 * (
+                                           (2 * config.column + 1) * config.size_of_cell // 3),
+                               height=config.size_of_cell,
+                               bg="white")
+        label_frame.pack_propagate(False)
+        self.__label_turn = tk.Label(label_frame,
+                                     relief="solid",
+                                     font=("Comic Sans MS", 13, "bold"),
+                                     text="Ваш ход",
+                                     fg="lime",
+                                     justify="center",
+                                     borderwidth=1)
+        self.__label_turn.pack(fill="both", expand=True)
+        self.__canvas.create_window(((2 * config.column + 1) * config.size_of_cell // 3,
                                      config.row * config.size_of_cell),
-                                    anchor="nw", window=self.__label_turn)
+                                    anchor="nw", window=label_frame)
         self.__canvas.pack()
 
     def __tune_window(self):
         self.__window.resizable(width=False, height=False)
         self.__window.title("Морской Бой")
-        self.__window.tk.call("wm", "iconphoto", self.__window._w, tk.PhotoImage(file="main_icon.png"))
+        self.__window.tk.call(
+            "wm", "iconphoto", self.__window._w, tk.PhotoImage(file="main_icon.png"))
         self.__window.protocol("WM_DELETE_self.window", self.__on_closing)
         self.__window.after_idle(self.__loop, 0)  # start endless __loop
         self.__window.mainloop()
@@ -61,7 +71,8 @@ class Application:
         if self.__foreign_field.presence_of_changes() and self.__label_turn["fg"] == "lime":
             self.__foreign_field.get_last_shot()
             if not self.__foreign_field.exist_hit_last_shot():
-                self.__label_turn.configure(text=" Ход противника-->", fg="red")
+                self.__label_turn.configure(
+                    text="Ход противника", fg="red")
                 self.__bot_field.take_a_shot()
 
         elif self.__bot_field.presence_of_changes() and self.__label_turn["fg"] == "red":
@@ -70,11 +81,12 @@ class Application:
             self.__field.update(*self.__bot_field.get_last_shot())
             if not self.__bot_field.exist_hit_last_shot():
                 self.__foreign_field.exist_hit_last_shot()
-                self.__label_turn.configure(text="<--- Ходите ", fg="lime")
+                self.__label_turn.configure(text="Ваш ход", fg="lime")
             else:
                 self.__bot_field.take_a_shot()
         if self.__foreign_field.get_run() and self.__bot_field.get_run():
-            self.__window.after(1, self.__loop, n + 1)  # endless __loop with delay
+            # endless __loop with delay
+            self.__window.after(1, self.__loop, n + 1)
         elif self.__bot_field.get_run():
             if messagebox.showinfo(title="Чел, хорош!", message="Вы победили!"):
                 self.__window.destroy()

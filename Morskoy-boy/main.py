@@ -9,16 +9,14 @@ class ConstructorFields:
     __lbl = ["tk.label"]
     __buttons = []
     __ship = [(int, int)]
-    __number_ships = 0
+    __number_ships = 9
     __window = ["tk.Tk()"]
     __real_field = ["zeros and Ships"]
 
     def __init__(self):
         self.__real_field = [[0 for _ in range(config.column)] for _ in range(config.row)]
         self.__ship = []
-        self.__window = tk.Tk(
-            "{}x{}".format((config.column * 2 + 1) * config.size_of_cell,
-                           (config.row + 1) * config.size_of_cell - 2))
+        self.__window = tk.Tk()
         button1 = tk.Button(self.__window, text="Играть с ботом", command=self.create_creation_window,
                             font=("Comic Sans MS", 13, "bold"), )
         button1.pack(anchor="center", expand=1)

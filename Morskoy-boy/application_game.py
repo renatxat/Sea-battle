@@ -25,7 +25,7 @@ class Application:
 
     def __create_board(self):
         self.__canvas = tk.Canvas(self.__window,
-                                  width=(config.column * 2 + 1) * config.size_of_cell,
+                                  width=(config.column * 2 + 1) * config.size_of_cell - 2,
                                   height=(config.row + 1) * config.size_of_cell - 2)
         self.__foreign_field = BattlefieldBotOpponent(self.__canvas)
         real_field = self.constructor_field

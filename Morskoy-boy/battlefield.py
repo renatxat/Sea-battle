@@ -2,7 +2,7 @@ class Battlefield:
     __quantity_ships = int
     __game_run = True
     _existence_of_raw_shot = False
-    __last_shot = (int, int)
+    __last_shot = (0, 0)
     _field = []
     __number_call_exist_hit_last_shot = 0
 
@@ -37,7 +37,7 @@ class Battlefield:
     def get_run(self):
         return self.__game_run
 
-    def exist_hit_last_shot(self):
+    def existence_hit_last_shot(self):
         if self._field[self.__last_shot[0]][self.__last_shot[1]] == "hit":
             self._existence_of_raw_shot = False
             self.__number_call_exist_hit_last_shot = 0

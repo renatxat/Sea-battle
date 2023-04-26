@@ -16,12 +16,13 @@ class Application:
 
     __label_turn = ["tk.Label()"]
 
-    def __init__(self, window, real_field):
+    def __init__(self, window, real_field, is_my_first_move, is_game_bot):
         self.constructor_field = real_field
         self.__window = window
-        self.__create_board()
-        self.__draw_boards()
-        self.__tune_window()
+        if is_game_bot:
+            self.__create_board()
+            self.__draw_boards(is_my_first_move)
+            self.__tune_window()
 
     def __create_board(self):
         self.__canvas = tk.Canvas(self.__window,
@@ -32,12 +33,12 @@ class Application:
         self.__field = BattlefieldPlayer(real_field, self.__canvas)
         self.__bot_field = BattlefieldBotPlayer(real_field)
 
-    def __draw_boards(self):
+    def __draw_boards(self, my_first_move):
         self.__field.view()
         self.__foreign_field.view()
         label_frame = tk.Frame(self.__canvas,
                                width=(2 * config.column + 1) * config.size_of_cell - 2 * (
-                                           (2 * config.column + 1) * config.size_of_cell // 3),
+                                       (2 * config.column + 1) * config.size_of_cell // 3),
                                height=config.size_of_cell,
                                bg="white")
         label_frame.pack_propagate(False)
@@ -48,19 +49,29 @@ class Application:
                                      fg="lime",
                                      justify="center",
                                      borderwidth=1)
+        if not my_first_move:
+            self.__label_turn.configure(text="Ход противника", fg="red")
+            self.__bot_field.take_a_shot()
+
         self.__label_turn.pack(fill="both", expand=True)
         self.__canvas.create_window(((2 * config.column + 1) * config.size_of_cell // 3,
                                      config.row * config.size_of_cell),
-                                    anchor="nw", window=label_frame)
+                                    anchor="nw",
+                                    window=label_frame)
         self.__canvas.pack()
 
     def __tune_window(self):
         self.__window.resizable(width=False, height=False)
         self.__window.title("Морской Бой")
-        self.__window.tk.call(
-            "wm", "iconphoto", self.__window._w, tk.PhotoImage(file="main_icon.png"))
+        self.__window.tk.call("wm", "iconphoto", self.__window._w, tk.PhotoImage(file="main_icon.png"))
         self.__window.protocol("WM_DELETE_self.window", self.__on_closing)
         self.__window.after_idle(self.__loop, 0)  # start endless __loop
+        x = (self.__window.winfo_screenwidth() -
+             self.__window.winfo_reqwidth()) / 2
+        y = (self.__window.winfo_screenheight() -
+             self.__window.winfo_reqheight()) / 2
+        self.__window.wm_geometry(
+            "+%d+%d" % (x - config.size_of_cell * config.column, y - config.size_of_cell * config.row // 2))
         self.__window.mainloop()
 
     def __on_closing(self):
@@ -70,17 +81,16 @@ class Application:
     def __loop(self, n):
         if self.__foreign_field.presence_of_changes() and self.__label_turn["fg"] == "lime":
             self.__foreign_field.get_last_shot()
-            if not self.__foreign_field.exist_hit_last_shot():
-                self.__label_turn.configure(
-                    text="Ход противника", fg="red")
+            if not self.__foreign_field.existence_hit_last_shot():
+                self.__label_turn.configure(text="Ход противника", fg="red")
                 self.__bot_field.take_a_shot()
 
         elif self.__bot_field.presence_of_changes() and self.__label_turn["fg"] == "red":
             self.__window.update()
             self.__canvas.after(800)
             self.__field.update(*self.__bot_field.get_last_shot())
-            if not self.__bot_field.exist_hit_last_shot():
-                self.__foreign_field.exist_hit_last_shot()
+            if not self.__bot_field.existence_hit_last_shot():
+                self.__foreign_field.existence_hit_last_shot()
                 self.__label_turn.configure(text="Ваш ход", fg="lime")
             else:
                 self.__bot_field.take_a_shot()
@@ -94,8 +104,3 @@ class Application:
             self.__field.update(*self.__bot_field.get_last_shot())
             if messagebox.showinfo(title="Трансорфмеры, общий сбор на НК", message="Восстание машин началось"):
                 self.__window.destroy()
-
-# oval = self.canvas.create_oval(0, 0, 100, 100, fill="white")
-# def move_oval(event):
-#     self.canvas.coords(oval, event.x - 30, event.y - 30, event.x + 30, event.y + 30)
-# self.canvas.tag_bind(oval, "<B1-Motion>", lambda: move_oval)

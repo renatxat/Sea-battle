@@ -15,12 +15,16 @@ class BattlefieldPlayer(Battlefield):
         super().__init__(real_field)
         self.__canvas = canvas
         for i in range(config.row):
-            temp = [tk.Label(self.__canvas, width=config.size_of_cell,
-                             height=config.size_of_cell, relief="flat",
+            temp = [tk.Label(self.__canvas,
+                             width=config.size_of_cell,
+                             height=config.size_of_cell,
+                             relief="flat",
                              bg="light gray")]
             for j in range(config.column):
-                lbl = tk.Label(self.__canvas, width=config.size_of_cell,
-                               height=config.size_of_cell, relief="groove",
+                lbl = tk.Label(self.__canvas,
+                               width=config.size_of_cell,
+                               height=config.size_of_cell,
+                               relief="groove",
                                bg="slateblue" if real_field[i][j] != 0 else "aqua")
                 temp.append(lbl)
             self.__labels.append(temp)
@@ -34,7 +38,8 @@ class BattlefieldPlayer(Battlefield):
                 self.__canvas.create_window(
                     (j * config.size_of_cell + config.column *
                      config.size_of_cell, i * config.size_of_cell),
-                    anchor="nw", window=self.__labels[i][j])
+                    anchor="nw",
+                    window=self.__labels[i][j])
 
     def view(self):
         label_frame = tk.Frame(self.__canvas,
@@ -52,7 +57,8 @@ class BattlefieldPlayer(Battlefield):
         self.__canvas.create_window(((2 * config.column + 1) * config.size_of_cell -
                                      ((2 * config.column + 1) * config.size_of_cell // 3),
                                      config.row * config.size_of_cell),
-                                    anchor="nw", window=label_frame)
+                                    anchor="nw",
+                                    window=label_frame)
         self.__create_labels()
 
     def update(self, x, y):
@@ -61,8 +67,8 @@ class BattlefieldPlayer(Battlefield):
         for x in range(config.row):
             for y in range(config.column):
                 if self._field[x][y] == "hit" and self.__labels[x][y + 1]["image"] == "":
-                    self.__labels[x][y +
-                                     1].config(image=self.__image_cross, relief="flat")
+                    self.__labels[x][y + 1].config(image=self.__image_cross,
+                                                   relief="flat")
 
                 if self._field[x][y] == "miss" and self.__labels[x][y + 1]["image"] == "":
                     self.__labels[x][y + 1].config(image=self.__image_dot)

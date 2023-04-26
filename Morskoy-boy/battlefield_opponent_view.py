@@ -36,11 +36,13 @@ class BattlefieldOpponent(Battlefield):
         for x in range(config.row):
             for y in range(config.column):
                 if self._field[x][y] == "hit" and self.__buttons[x][y]["command"] != 0:
-                    self.__buttons[x][y].config(bg="crimson", command=0,
+                    self.__buttons[x][y].config(bg="crimson",
+                                                command=0,
                                                 image=self.__image_hit,
                                                 relief="flat")
                 if self._field[x][y] == "miss" and self.__buttons[x][y]["command"] != 0:
-                    self.__buttons[x][y].config(bg="light blue", command=0,
+                    self.__buttons[x][y].config(bg="light blue",
+                                                command=0,
                                                 image=self.__image_miss)
 
     def __shot_and_update(self, x, y):
@@ -50,9 +52,12 @@ class BattlefieldOpponent(Battlefield):
     def __create_buttons(self):
         for i in range(config.row):
             for j in range(config.column):
-                self.__buttons[i][j].pack(side="left", fill=None, expand=False)
+                self.__buttons[i][j].pack(side="left",
+                                          fill=None,
+                                          expand=False)
                 self.__canvas.create_window((j * config.size_of_cell, i * config.size_of_cell),
-                                            anchor="nw", window=self.__buttons[i][j])
+                                            anchor="nw",
+                                            window=self.__buttons[i][j])
 
     def view(self):
         label_frame = tk.Frame(self.__canvas,
@@ -68,5 +73,6 @@ class BattlefieldOpponent(Battlefield):
                        borderwidth=1)
         lbl.pack(fill="both", expand=True)
         self.__canvas.create_window((0, config.row * config.size_of_cell),
-                                    anchor="nw", window=label_frame)
+                                    anchor="nw",
+                                    window=label_frame)
         self.__create_buttons()

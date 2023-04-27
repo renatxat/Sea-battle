@@ -128,7 +128,7 @@ class ConstructorFields:
         elif len(self.__ship) == config.ship_sizes[self.__number_ships]:
             if not self.check_correct_ship():
                 for x, y in self.__ship:
-                    self.__buttons[y][x].config(command=lambda a=y, b=x: self.add(a, b),
+                    self.__buttons[y][x].config(command=lambda a=x, b=y: self.add(a, b),
                                                 bg="aqua",
                                                 state="normal")
                 self.__ship = []

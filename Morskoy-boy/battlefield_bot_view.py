@@ -3,7 +3,7 @@ import config
 from ship import Ship
 from random import randint
 from itertools import product
-
+from time import time
 class BattlefieldBotOpponent(BattlefieldOpponent):
     __probability_field = [(int, int)]
     __dict_index_elem = {(int, int): int}
@@ -14,12 +14,19 @@ class BattlefieldBotOpponent(BattlefieldOpponent):
         self.__probability_field = [(x, y) for x in range(config.column) for y in range(config.row)]
         self.__dict_index_elem = {(x, y): x * config.row + y for x in range(config.column) for y in range(config.row)}
         self.__arrange_the_ships()
-
     def __arrange_the_ships(self):    
         real_field = [[0 for _ in range(config.column)] for _ in range(config.row)]
         number_ships = 0
-
+        start_time = time()
         while number_ships != len(config.ship_sizes):
+            if time() - start_time > 10:
+                # self.__probability_field = [(x, y) for x in range(config.column) for y in range(config.row)]
+                # self.__dict_index_elem = {(x, y): x * config.row + y for x in range(config.column) for y in range(config.row)}
+                # real_field = [[0 for _ in range(config.column)] for _ in range(config.row)]
+                # number_ships = 0
+                # start_time = time()
+                self.__init__(self.__canvas)
+
             size = config.ship_sizes[number_ships]
             index = randint(0, len(self.__probability_field) - 1)
             x, y = self.__probability_field[index]

@@ -31,8 +31,8 @@ class Application:
         else:
             resizing_constant = 2
         self.__canvas = tk.Canvas(self.__window,
-                                  width=(config.column * 2 + 1) * config.size_of_cell - resizing_constant,
-                                  height=(config.row + 1) * config.size_of_cell - resizing_constant)
+                                  width=(config.COLUMN * 2 + 1) * config.SIZE_OF_CELL - resizing_constant,
+                                  height=(config.ROW + 1) * config.SIZE_OF_CELL - resizing_constant)
         self.__foreign_field = BattlefieldBotOpponent(self.__canvas)
         real_field = self.constructor_field
         self.__field = BattlefieldPlayer(real_field, self.__canvas)
@@ -42,9 +42,9 @@ class Application:
         self.__field.view()
         self.__foreign_field.view()
         label_frame = tk.Frame(self.__canvas,
-                               width=(2 * config.column + 1) * config.size_of_cell - 2 * (
-                                       (2 * config.column + 1) * config.size_of_cell // 3),
-                               height=config.size_of_cell,
+                               width=(2 * config.COLUMN + 1) * config.SIZE_OF_CELL - 2 * (
+                                       (2 * config.COLUMN + 1) * config.SIZE_OF_CELL // 3),
+                               height=config.SIZE_OF_CELL,
                                bg="white")
         label_frame.pack_propagate(False)
         self.__label_turn = tk.Label(label_frame,
@@ -59,8 +59,8 @@ class Application:
             self.__bot_field.take_a_shot()
 
         self.__label_turn.pack(fill="both", expand=True)
-        self.__canvas.create_window(((2 * config.column + 1) * config.size_of_cell // 3,
-                                     config.row * config.size_of_cell),
+        self.__canvas.create_window(((2 * config.COLUMN + 1) * config.SIZE_OF_CELL // 3,
+                                     config.ROW * config.SIZE_OF_CELL),
                                     anchor="nw",
                                     window=label_frame)
         self.__canvas.pack()
@@ -76,7 +76,7 @@ class Application:
         y = (self.__window.winfo_screenheight() -
              self.__window.winfo_reqheight()) / 2
         self.__window.wm_geometry(
-            "+%d+%d" % (x - config.size_of_cell * config.column, y - config.size_of_cell * config.row // 2))
+            "+%d+%d" % (x - config.SIZE_OF_CELL * config.COLUMN, y - config.SIZE_OF_CELL * config.ROW // 2))
         self.__window.mainloop()
 
     def __on_closing(self):
@@ -92,7 +92,8 @@ class Application:
 
         elif self.__bot_field.presence_of_changes() and self.__label_turn["fg"] == "red":
             self.__window.update()
-            self.__canvas.after(800)
+            delay_constant = 800
+            self.__canvas.after(delay_constant)
             self.__field.update(*self.__bot_field.get_last_shot())
             if not self.__bot_field.existence_hit_last_shot():
                 self.__foreign_field.existence_hit_last_shot()

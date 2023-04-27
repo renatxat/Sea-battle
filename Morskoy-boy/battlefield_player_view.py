@@ -15,16 +15,16 @@ class BattlefieldPlayer(Battlefield):
     def __init__(self, real_field, canvas):
         super().__init__(real_field)
         self.__canvas = canvas
-        for i in range(config.row):
+        for i in range(config.ROW):
             temp = [tk.Label(self.__canvas,
-                             width=config.size_of_cell,
-                             height=config.size_of_cell,
+                             width=config.SIZE_OF_CELL,
+                             height=config.SIZE_OF_CELL,
                              relief="flat",
                              bg="light gray")]
-            for j in range(config.column):
+            for j in range(config.COLUMN):
                 lbl = tk.Label(self.__canvas,
-                               width=config.size_of_cell,
-                               height=config.size_of_cell,
+                               width=config.SIZE_OF_CELL,
+                               height=config.SIZE_OF_CELL,
                                relief="groove",
                                bg="slateblue" if real_field[i][j] != 0 else "aqua")
                 temp.append(lbl)
@@ -33,19 +33,19 @@ class BattlefieldPlayer(Battlefield):
         self.__image_dot = ImageTk.PhotoImage(file="dot.png")
 
     def __create_labels(self):
-        for i in range(config.row):
-            for j in range(config.column + 1):
+        for i in range(config.ROW):
+            for j in range(config.COLUMN + 1):
                 self.__labels[i][j].pack(expand=False, side="top")
                 self.__canvas.create_window(
-                    (j * config.size_of_cell + config.column *
-                     config.size_of_cell, i * config.size_of_cell),
+                    (j * config.SIZE_OF_CELL + config.COLUMN *
+                     config.SIZE_OF_CELL, i * config.SIZE_OF_CELL),
                     anchor="nw",
                     window=self.__labels[i][j])
 
     def view(self):
         label_frame = tk.Frame(self.__canvas,
-                               width=(2 * config.column + 1) * config.size_of_cell // 3,
-                               height=config.size_of_cell,
+                               width=(2 * config.COLUMN + 1) * config.SIZE_OF_CELL // 3,
+                               height=config.SIZE_OF_CELL,
                                bg="white")
         label_frame.pack_propagate(False)
         lbl = tk.Label(label_frame,
@@ -55,9 +55,9 @@ class BattlefieldPlayer(Battlefield):
                        justify="center",
                        borderwidth=1)
         lbl.pack(fill="both", expand=True)
-        self.__canvas.create_window(((2 * config.column + 1) * config.size_of_cell -
-                                     ((2 * config.column + 1) * config.size_of_cell // 3),
-                                     config.row * config.size_of_cell),
+        self.__canvas.create_window(((2 * config.COLUMN + 1) * config.SIZE_OF_CELL -
+                                     ((2 * config.COLUMN + 1) * config.SIZE_OF_CELL // 3),
+                                     config.ROW * config.SIZE_OF_CELL),
                                     anchor="nw",
                                     window=label_frame)
         self.__create_labels()
@@ -65,8 +65,8 @@ class BattlefieldPlayer(Battlefield):
     def update(self, x, y):
         self._existence_of_raw_shot = False
         self._shot(x, y)
-        for x in range(config.column):
-            for y in range(config.row):
+        for x in range(config.COLUMN):
+            for y in range(config.ROW):
                 if self._field[y][x] == "hit" and self.__labels[y][x + 1]["image"] == "":
                     self.__labels[y][x + 1].config(image=self.__image_cross,
                                                    relief="flat")

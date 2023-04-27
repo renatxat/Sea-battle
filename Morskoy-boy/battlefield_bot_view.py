@@ -14,20 +14,21 @@ class BattlefieldBotOpponent(BattlefieldOpponent):
 
     def __init__(self, canvas):
         self.__canvas = canvas
-        self.__probability_field = [(x, y) for x in range(config.column) for y in range(config.row)]
-        self.__dict_index_elem = {(x, y): x * config.row + y for x in range(config.column) for y in range(config.row)}
-        self.real_field = [[0 for _ in range(config.column)] for _ in range(config.row)]
+        self.__probability_field = [(x, y) for x in range(config.COLUMN) for y in range(config.ROW)]
+        self.__dict_index_elem = {(x, y): x * config.ROW + y for x in range(config.COLUMN) for y in range(config.ROW)}
+        self.real_field = [[0 for _ in range(config.COLUMN)] for _ in range(config.ROW)]
         self.__arrange_the_ships()
         super().__init__(self.real_field, self.__canvas)
 
     def __arrange_the_ships(self):
         number_ships = 0
         start_time = time()
-        while number_ships != len(config.ship_sizes):
-            if time() - start_time > 10:
+        while number_ships != len(config.SHIP_SIZES):
+            wait_constant = 10
+            if time() - start_time > wait_constant:
                 self.__init__(self.__canvas)
 
-            size = config.ship_sizes[number_ships]
+            size = config.SHIP_SIZES[number_ships]
             index = randint(0, len(self.__probability_field) - 1)
             x, y = self.__probability_field[index]
             vertical = randint(0, 1)
@@ -64,7 +65,7 @@ class BattlefieldBotOpponent(BattlefieldOpponent):
         ship_and_environment = set()
 
         for _ in range(size):
-            if not (0 <= x < config.column and 0 <= y < config.row):
+            if not (0 <= x < config.COLUMN and 0 <= y < config.ROW):
                 return False
             env_x = [x - 1, x, x + 1]
             env_y = [y - 1, y, y + 1]
@@ -73,6 +74,6 @@ class BattlefieldBotOpponent(BattlefieldOpponent):
             x, y = x + vertical, y + 1 - vertical
 
         for x, y in ship_and_environment:
-            if 0 <= x < config.column and 0 <= y < config.row and self.__dict_index_elem[(x, y)] == -1:
+            if 0 <= x < config.COLUMN and 0 <= y < config.ROW and self.__dict_index_elem[(x, y)] == -1:
                 return False
         return True

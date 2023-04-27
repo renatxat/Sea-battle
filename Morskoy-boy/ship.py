@@ -17,7 +17,7 @@ class Ship:
             env_x = [x - 1, x, x + 1]
             env_y = [y - 1, y, y + 1]
             for nearby_x, nearby_y in product(env_x, env_y):
-                if 0 <= nearby_x < config.column and 0 <= nearby_y < config.row:
+                if 0 <= nearby_x < config.COLUMN and 0 <= nearby_y < config.ROW:
                     self.__environment.add((nearby_x, nearby_y))
         self.__environment = self.__environment.difference(set(self.__coordinates))
 

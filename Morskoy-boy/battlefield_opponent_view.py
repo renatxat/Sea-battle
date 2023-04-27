@@ -16,24 +16,24 @@ class BattlefieldOpponent(Battlefield):
     def __init__(self, real_field, canvas):
         super().__init__(real_field)
         self.__canvas = canvas
-        for i in range(config.row):
+        for i in range(config.ROW):
             temp = []
-            for j in range(config.column):
+            for j in range(config.COLUMN):
                 btn = tk.Button(self.__canvas,
-                                width=config.size_of_cell,
-                                height=config.size_of_cell,
+                                width=config.SIZE_OF_CELL,
+                                height=config.SIZE_OF_CELL,
                                 relief="groove")
                 temp.append(btn)
             self.__buttons.append(temp)
-        for i in range(config.row):
-            for j in range(config.column):
+        for i in range(config.ROW):
+            for j in range(config.COLUMN):
                 self.__buttons[i][j]["command"] = lambda x=j, y=i: self.__shot_and_update(x, y)
         self.__image_hit = ImageTk.PhotoImage(file="hit.png")
         self.__image_miss = ImageTk.PhotoImage(file="water.png")
 
     def __update(self):
-        for x in range(config.column):
-            for y in range(config.row):
+        for x in range(config.COLUMN):
+            for y in range(config.ROW):
                 if self._field[y][x] == "hit" and self.__buttons[y][x]["command"] != 0:
                     self.__buttons[y][x].config(bg="crimson",
                                                 command=0,
@@ -49,19 +49,19 @@ class BattlefieldOpponent(Battlefield):
         self.__update()
 
     def __create_buttons(self):
-        for i in range(config.row):
-            for j in range(config.column):
+        for i in range(config.ROW):
+            for j in range(config.COLUMN):
                 self.__buttons[i][j].pack(side="left",
                                           fill=None,
                                           expand=False)
-                self.__canvas.create_window((j * config.size_of_cell, i * config.size_of_cell),
+                self.__canvas.create_window((j * config.SIZE_OF_CELL, i * config.SIZE_OF_CELL),
                                             anchor="nw",
                                             window=self.__buttons[i][j])
 
     def view(self):
         label_frame = tk.Frame(self.__canvas,
-                               width=(2 * config.column + 1) * config.size_of_cell // 3,
-                               height=config.size_of_cell,
+                               width=(2 * config.COLUMN + 1) * config.SIZE_OF_CELL // 3,
+                               height=config.SIZE_OF_CELL,
                                bg="white")
         label_frame.pack_propagate(False)
         lbl = tk.Label(label_frame,
@@ -71,7 +71,7 @@ class BattlefieldOpponent(Battlefield):
                        justify="center",
                        borderwidth=1)
         lbl.pack(fill="both", expand=True)
-        self.__canvas.create_window((0, config.row * config.size_of_cell),
+        self.__canvas.create_window((0, config.ROW * config.SIZE_OF_CELL),
                                     anchor="nw",
                                     window=label_frame)
         self.__create_buttons()

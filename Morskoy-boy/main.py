@@ -18,7 +18,7 @@ class ConstructorFields:
     __is_game_bot = True
 
     def __init__(self):
-        self.__real_field = [[0 for _ in range(config.column)] for _ in range(config.row)]
+        self.__real_field = [[0 for _ in range(config.COLUMN)] for _ in range(config.ROW)]
         self.__ship = []
         self.__window = tk.Tk()
         button1 = tk.Button(self.__window,
@@ -80,25 +80,25 @@ class ConstructorFields:
         self.__window = tk.Tk()
         self.tune_window()
         canvas = tk.Canvas(self.__window,
-                           width=config.column * config.size_of_cell - 2,
-                           height=config.row * config.size_of_cell - 2)
-        for i in range(config.row):
+                           width=config.COLUMN * config.SIZE_OF_CELL - 2,
+                           height=config.ROW * config.SIZE_OF_CELL - 2)
+        for i in range(config.ROW):
             temp = []
-            for j in range(config.column):
+            for j in range(config.COLUMN):
                 btn = tk.Button(canvas,
                                 bg="aqua",
-                                width=config.size_of_cell,
-                                height=config.size_of_cell,
+                                width=config.SIZE_OF_CELL,
+                                height=config.SIZE_OF_CELL,
                                 borderwidth=2)
                 temp.append(btn)
             self.__buttons.append(temp)
-        for i in range(config.row):
-            for j in range(config.column):
+        for i in range(config.ROW):
+            for j in range(config.COLUMN):
                 self.__buttons[i][j]["command"] = lambda x=j, y=i: self.add(x, y)
-        for i in range(config.row):
-            for j in range(config.column):
+        for i in range(config.ROW):
+            for j in range(config.COLUMN):
                 self.__buttons[i][j].pack(expand=False, side="top")
-                canvas.create_window((j * config.size_of_cell, i * config.size_of_cell),
+                canvas.create_window((j * config.SIZE_OF_CELL, i * config.SIZE_OF_CELL),
                                      anchor="nw",
                                      window=self.__buttons[i][j])
         self.__lbl = tk.Label(self.__window,
@@ -122,11 +122,11 @@ class ConstructorFields:
                                     state="disabled")
 
     def update_ships(self):
-        if len(config.ship_sizes) == self.__number_ships:
+        if len(config.SHIP_SIZES) == self.__number_ships:
             self.__window.destroy()
             window = tk.Tk()
             Application(window, self.__real_field, self.__is_my_first_move, self.__is_game_bot)
-        elif len(self.__ship) == config.ship_sizes[self.__number_ships]:
+        elif len(self.__ship) == config.SHIP_SIZES[self.__number_ships]:
             if not self.check_correct_ship():
                 for x, y in self.__ship:
                     self.__buttons[y][x].config(command=lambda a=x, b=y: self.add(a, b),
@@ -137,11 +137,11 @@ class ConstructorFields:
                                     message="Отмеченные клетки не являются необходимым кораблём. Попытайтесь снова.")
             else:
                 self.__number_ships += 1
-                if len(config.ship_sizes) == self.__number_ships:
+                if len(config.SHIP_SIZES) == self.__number_ships:
                     self.__lbl["text"] = "генерируем поле"
                 else:
-                    self.__lbl["text"] = f"расположите {config.ship_sizes[self.__number_ships]}" + "-х" * (
-                            config.ship_sizes[self.__number_ships] != 1) + " палубный корабль"
+                    self.__lbl["text"] = f"расположите {config.SHIP_SIZES[self.__number_ships]}" + "-х" * (
+                            config.SHIP_SIZES[self.__number_ships] != 1) + " палубный корабль"
                 real_ship = Ship(self.__ship)
                 for x, y in self.__ship:
                     self.__real_field[y][x] = real_ship

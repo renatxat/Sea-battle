@@ -9,7 +9,6 @@ class BattlefieldOpponent(Battlefield):
     # what the player sees
     __buttons = []
     # for each cell we store 0 or its ship
-    __field = []
     __image_hit = "image.png"
     __image_miss = "image.png"
 
@@ -27,21 +26,20 @@ class BattlefieldOpponent(Battlefield):
             self.__buttons.append(temp)
         for i in range(config.row):
             for j in range(config.column):
-                self.__buttons[i][j]["command"] = lambda x=i, y=j: self.__shot_and_update(
-                    x, y)
+                self.__buttons[i][j]["command"] = lambda x=j, y=i: self.__shot_and_update(x, y)
         self.__image_hit = ImageTk.PhotoImage(file="hit.png")
         self.__image_miss = ImageTk.PhotoImage(file="water.png")
 
     def __update(self):
-        for x in range(config.row):
-            for y in range(config.column):
-                if self._field[x][y] == "hit" and self.__buttons[x][y]["command"] != 0:
-                    self.__buttons[x][y].config(bg="crimson",
+        for x in range(config.column):
+            for y in range(config.row):
+                if self._field[y][x] == "hit" and self.__buttons[y][x]["command"] != 0:
+                    self.__buttons[y][x].config(bg="crimson",
                                                 command=0,
                                                 image=self.__image_hit,
                                                 relief="flat")
-                if self._field[x][y] == "miss" and self.__buttons[x][y]["command"] != 0:
-                    self.__buttons[x][y].config(bg="light blue",
+                if self._field[y][x] == "miss" and self.__buttons[y][x]["command"] != 0:
+                    self.__buttons[y][x].config(bg="light blue",
                                                 command=0,
                                                 image=self.__image_miss)
 

@@ -1,5 +1,5 @@
 import config
-
+from itertools import product
 
 class Ship:
     __sz = int
@@ -12,9 +12,11 @@ class Ship:
 
         self.__environment.clear()
         for x, y in self.__coordinates:
-            for counter in range(9):
-                if (0 <= x + counter % 3 - 1 < config.row) and (0 <= y + counter // 3 - 1 < config.column):
-                    self.__environment.add((x + counter % 3 - 1, y + counter // 3 - 1))
+            env_x = [x - 1, x, x + 1]
+            env_y = [y - 1, y, y + 1]
+            for nearby_x, nearby_y in product(env_x, env_y):
+                if 0 <= nearby_x < config.column and 0 <= nearby_y < config.row:
+                    self.__environment.add((nearby_x, nearby_y))
         self.__environment = self.__environment.difference(set(self.__coordinates))
 
     def shot(self):

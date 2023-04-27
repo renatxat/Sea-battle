@@ -1,73 +1,73 @@
 from battlefield_opponent_view import BattlefieldOpponent
 import config
-from random import randint
 from ship import Ship
-
+from random import randint
+from itertools import product
 
 class BattlefieldBotOpponent(BattlefieldOpponent):
+    __probability_field = [(int, int)]
+    __dict_index_elem = {(int, int): int}
+    __canvas = ["tk.Canvas()"]
 
     def __init__(self, canvas):
-        probability_field = [(x, y) for x in range(config.row)
-                             for y in range(config.column)]
-        self.dict_index_elem = {
-            (x, y): x * config.column + y for x in range(config.row) for y in range(config.column)}
-        real_field = [[0 for _ in range(config.column)]
-                      for _ in range(config.row)]
+        self.__canvas = canvas
+        self.__probability_field = [(x, y) for x in range(config.column) for y in range(config.row)]
+        self.__dict_index_elem = {(x, y): x * config.row + y for x in range(config.column) for y in range(config.row)}
+        self.__arrange_the_ships()
+
+    def __arrange_the_ships(self):    
+        real_field = [[0 for _ in range(config.column)] for _ in range(config.row)]
         number_ships = 0
+
         while number_ships != len(config.ship_sizes):
-            while True:
-                size = config.ship_sizes[number_ships]
-                index = randint(0, len(probability_field) - 1)
-                x, y = probability_field[index]
-                vertical = randint(0, 1)
-                if self.check_ship(size, vertical, x, y):
-                    number_ships += 1
-                    ship = []
-                    for _ in range(size):
-                        ship.append((x, y))
-                        x, y = x + vertical, y + 1 - vertical
-                    real_ship = Ship(ship)
-                    for (x, y) in ship:
-                        index = self.dict_index_elem[(x, y)]
-                        if index == -2:
-                            self.dict_index_elem[(x, y)] = -1
-                        else:
-                            self.dict_index_elem[probability_field[-1]] = index
-                            self.dict_index_elem[probability_field[index]] = -1
-                            # -1 means that a ship is located on the cell
+            size = config.ship_sizes[number_ships]
+            index = randint(0, len(self.__probability_field) - 1)
+            x, y = self.__probability_field[index]
+            vertical = randint(0, 1)
 
-                            probability_field[index], probability_field[-1] = \
-                                probability_field[-1], probability_field[index]
-                            probability_field.pop()
-                            real_field[x][y] = real_ship
+            if self.__check_ship(size, vertical, x, y):
+                number_ships += 1
+                ship = []
+                for _ in range(size):
+                    ship.append((x, y))
+                    x, y = x + vertical, y + 1 - vertical
+                real_ship = Ship(ship)
 
-                    environment = real_ship.get_environment()
-                    for (x, y) in environment:
-                        index = self.dict_index_elem[(x, y)]
-                        if index != -2:
-                            self.dict_index_elem[probability_field[-1]] = index
-                            self.dict_index_elem[probability_field[index]] = -2
-                            # -2 means that the unsuitable cells from environment ships
+                for x, y in ship:
+                        # -1 means that a ship is located on the cell
+                        self.__remove_cell(self.__dict_index_elem[(x, y)], -1)
+                        self.__dict_index_elem[(x, y)] = -1
+                        real_field[y][x] = real_ship
 
-                            probability_field[index], probability_field[-1] = \
-                                probability_field[-1], probability_field[index]
-                            probability_field.pop()
-                    break
+                for x, y in real_ship.get_environment():
+                    index = self.__dict_index_elem[(x, y)]
+                    # -2 means that the unsuitable cells from environment ships
+                    self.__remove_cell(index, -2)
 
-        super().__init__(real_field, canvas)
+        super().__init__(real_field, self.__canvas)
 
-    def check_ship(self, size, vertical, x, y):
-        ship_and_environment = []
+    def __remove_cell(self, index, new_value_in_dict):
+        if index >= 0:
+            self.__dict_index_elem[self.__probability_field[-1]] = index
+            self.__dict_index_elem[self.__probability_field[index]] = new_value_in_dict
+            # swap with the last cell in __probability_field and pop last elements
+            self.__probability_field[index], self.__probability_field[-1] = \
+            self.__probability_field[-1], self.__probability_field[index]
+            self.__probability_field.pop()
+
+    def __check_ship(self, size, vertical, x, y):
+        ship_and_environment = set()
 
         for _ in range(size):
-            if not (0 <= x < config.row and 0 <= y < config.column):
+            if not (0 <= x < config.column and 0 <= y < config.row):
                 return False
-            for counter in range(9):
-                ship_and_environment.append(
-                    (x + counter % 3 - 1, y + counter // 3 - 1))
+            env_x = [x - 1, x, x + 1]
+            env_y = [y - 1, y, y + 1]
+            for nearby_x, nearby_y in product(env_x, env_y):
+                ship_and_environment.add((nearby_x, nearby_y))
             x, y = x + vertical, y + 1 - vertical
 
-        for (x, y) in ship_and_environment:
-            if 0 <= x < config.row and 0 <= y < config.column and self.dict_index_elem[(x, y)] == -1:
+        for x, y in ship_and_environment:
+            if 0 <= x < config.column and 0 <= y < config.row and self.__dict_index_elem[(x, y)] == -1:
                 return False
         return True

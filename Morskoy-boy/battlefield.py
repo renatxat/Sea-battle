@@ -16,17 +16,17 @@ class Battlefield:
             return
         self.__last_shot = (x, y)
         self._existence_of_raw_shot = True
-        if not isinstance(self._field[x][y], (int, str)):
-            changes = self._field[x][y].shot()
-            self._field[x][y] = 'hit'
+        if not isinstance(self._field[y][x], (int, str)):
+            changes = self._field[y][x].shot()
+            self._field[y][x] = 'hit'
             if len(changes) > 0:
                 self.__quantity_ships -= 1
             if self.__quantity_ships == 0:
                 self.__game_run = False
-            for (x, y) in changes:
-                self._field[x][y] = 'miss'
-        elif isinstance(self._field[x][y], int):
-            self._field[x][y] = 'miss'
+            for x, y in changes:
+                self._field[y][x] = 'miss'
+        elif isinstance(self._field[y][x], int):
+            self._field[y][x] = 'miss'
 
     def presence_of_changes(self):
         return self._existence_of_raw_shot
@@ -38,7 +38,7 @@ class Battlefield:
         return self.__game_run
 
     def existence_hit_last_shot(self):
-        if self._field[self.__last_shot[0]][self.__last_shot[1]] == "hit":
+        if self._field[self.__last_shot[1]][self.__last_shot[0]] == "hit":
             self._existence_of_raw_shot = False
             self.__number_call_exist_hit_last_shot = 0
             return True

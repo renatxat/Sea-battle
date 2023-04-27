@@ -93,7 +93,7 @@ class ConstructorFields:
             self.__buttons.append(temp)
         for i in range(config.row):
             for j in range(config.column):
-                self.__buttons[i][j]["command"] = lambda x=i, y=j: self.add(x, y)
+                self.__buttons[i][j]["command"] = lambda x=j, y=i: self.add(x, y)
         for i in range(config.row):
             for j in range(config.column):
                 self.__buttons[i][j].pack(expand=False, side="top")
@@ -116,10 +116,9 @@ class ConstructorFields:
 
     def add(self, x, y):
         self.__ship.append((x, y))
-        self.__buttons[x][y].config(
-            command=0,
-            bg="slateblue",
-            state="disabled")
+        self.__buttons[y][x].config(command=0,
+                                    bg="slateblue",
+                                    state="disabled")
 
     def update_ships(self):
         if len(config.ship_sizes) == self.__number_ships:
@@ -128,8 +127,8 @@ class ConstructorFields:
             Application(window, self.__real_field, self.__is_my_first_move, self.__is_game_bot)
         elif len(self.__ship) == config.ship_sizes[self.__number_ships]:
             if not self.check_correct_ship():
-                for (x, y) in self.__ship:
-                    self.__buttons[x][y].config(command=lambda a=x, b=y: self.add(a, b),
+                for x, y in self.__ship:
+                    self.__buttons[y][x].config(command=lambda a=y, b=x: self.add(a, b),
                                                 bg="aqua",
                                                 state="normal")
                 self.__ship = []
@@ -143,10 +142,10 @@ class ConstructorFields:
                     self.__lbl["text"] = f"расположите {config.ship_sizes[self.__number_ships]}" + "-х" * (
                             config.ship_sizes[self.__number_ships] != 1) + " палубный корабль"
                 real_ship = Ship(self.__ship)
-                for (x, y) in self.__ship:
-                    self.__real_field[x][y] = real_ship
-                for (x, y) in real_ship.get_environment():
-                    self.__buttons[x][y].config(command=0,
+                for x, y in self.__ship:
+                    self.__real_field[y][x] = real_ship
+                for x, y in real_ship.get_environment():
+                    self.__buttons[y][x].config(command=0,
                                                 bg="powderblue",
                                                 state="disabled")
                 self.__ship = []

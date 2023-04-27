@@ -1,7 +1,8 @@
-import tkinter as tk
-import config
-from PIL import ImageTk
 from battlefield import Battlefield
+import config
+
+import tkinter as tk
+from PIL import ImageTk
 
 
 class BattlefieldOpponent(Battlefield):

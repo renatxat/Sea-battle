@@ -1,10 +1,11 @@
 from battlefield_player_view import BattlefieldPlayer
 from battlefield_bot_view import BattlefieldBotOpponent
 from battlefield_bot import BattlefieldBotPlayer
+import config
 
 import tkinter as tk
 from tkinter import messagebox
-import config
+from sys import platform
 
 
 class Application:
@@ -25,9 +26,13 @@ class Application:
             self.__tune_window()
 
     def __create_board(self):
+        if platform.startswith('win'):
+            resizing_constant = 4
+        else:
+            resizing_constant = 2
         self.__canvas = tk.Canvas(self.__window,
-                                  width=(config.column * 2 + 1) * config.size_of_cell - 2,
-                                  height=(config.row + 1) * config.size_of_cell - 2)
+                                  width=(config.column * 2 + 1) * config.size_of_cell - resizing_constant,
+                                  height=(config.row + 1) * config.size_of_cell - resizing_constant)
         self.__foreign_field = BattlefieldBotOpponent(self.__canvas)
         real_field = self.constructor_field
         self.__field = BattlefieldPlayer(real_field, self.__canvas)

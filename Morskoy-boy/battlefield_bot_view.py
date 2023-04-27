@@ -1,9 +1,12 @@
 from battlefield_opponent_view import BattlefieldOpponent
-import config
 from ship import Ship
+import config
+
 from random import randint
 from itertools import product
 from time import time
+
+
 class BattlefieldBotOpponent(BattlefieldOpponent):
     __probability_field = [(int, int)]
     __dict_index_elem = {(int, int): int}
@@ -13,18 +16,15 @@ class BattlefieldBotOpponent(BattlefieldOpponent):
         self.__canvas = canvas
         self.__probability_field = [(x, y) for x in range(config.column) for y in range(config.row)]
         self.__dict_index_elem = {(x, y): x * config.row + y for x in range(config.column) for y in range(config.row)}
+        self.real_field = [[0 for _ in range(config.column)] for _ in range(config.row)]
         self.__arrange_the_ships()
-    def __arrange_the_ships(self):    
-        real_field = [[0 for _ in range(config.column)] for _ in range(config.row)]
+        super().__init__(self.real_field, self.__canvas)
+
+    def __arrange_the_ships(self):
         number_ships = 0
         start_time = time()
         while number_ships != len(config.ship_sizes):
             if time() - start_time > 10:
-                # self.__probability_field = [(x, y) for x in range(config.column) for y in range(config.row)]
-                # self.__dict_index_elem = {(x, y): x * config.row + y for x in range(config.column) for y in range(config.row)}
-                # real_field = [[0 for _ in range(config.column)] for _ in range(config.row)]
-                # number_ships = 0
-                # start_time = time()
                 self.__init__(self.__canvas)
 
             size = config.ship_sizes[number_ships]
@@ -41,17 +41,15 @@ class BattlefieldBotOpponent(BattlefieldOpponent):
                 real_ship = Ship(ship)
 
                 for x, y in ship:
-                        # -1 means that a ship is located on the cell
-                        self.__remove_cell(self.__dict_index_elem[(x, y)], -1)
-                        self.__dict_index_elem[(x, y)] = -1
-                        real_field[y][x] = real_ship
+                    # -1 means that a ship is located on the cell
+                    self.__remove_cell(self.__dict_index_elem[(x, y)], -1)
+                    self.__dict_index_elem[(x, y)] = -1
+                    self.real_field[y][x] = real_ship
 
                 for x, y in real_ship.get_environment():
                     index = self.__dict_index_elem[(x, y)]
                     # -2 means that the unsuitable cells from environment ships
                     self.__remove_cell(index, -2)
-
-        super().__init__(real_field, self.__canvas)
 
     def __remove_cell(self, index, new_value_in_dict):
         if index >= 0:
@@ -59,7 +57,7 @@ class BattlefieldBotOpponent(BattlefieldOpponent):
             self.__dict_index_elem[self.__probability_field[index]] = new_value_in_dict
             # swap with the last cell in __probability_field and pop last elements
             self.__probability_field[index], self.__probability_field[-1] = \
-            self.__probability_field[-1], self.__probability_field[index]
+                self.__probability_field[-1], self.__probability_field[index]
             self.__probability_field.pop()
 
     def __check_ship(self, size, vertical, x, y):

@@ -1,5 +1,6 @@
-import config
 from battlefield import Battlefield
+import config
+
 from random import randint
 
 

@@ -2,7 +2,7 @@ class Battlefield:
     __quantity_ships = int
     __game_run = True
     _existence_of_raw_shot = False
-    __last_shot = (0, 0)
+    __last_shot = (int, int)
     _field = []
     __number_call_exist_hit_last_shot = 0
 
@@ -10,6 +10,7 @@ class Battlefield:
         self.__quantity_ships = len(
             set([j for i in real_field for j in i])) - 1
         self._field = real_field
+        self.__last_shot = (0, 0)
 
     def _shot(self, x, y):
         if self._existence_of_raw_shot:

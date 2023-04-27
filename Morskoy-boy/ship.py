@@ -1,5 +1,7 @@
 import config
+
 from itertools import product
+
 
 class Ship:
     __sz = int
@@ -22,9 +24,9 @@ class Ship:
     def shot(self):
         self.__sz -= 1
         if self.__sz != 0:
-            # ранил
+            # wounded
             return {}
-        # убил
+        # killed
         return self.get_environment()
 
     def get_environment(self):

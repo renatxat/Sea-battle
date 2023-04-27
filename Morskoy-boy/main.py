@@ -1,8 +1,9 @@
 from ship import Ship
+from application_game import Application
 import config
+
 import tkinter as tk
 from tkinter import messagebox
-from application_game import Application
 from random import randint
 
 
@@ -79,8 +80,8 @@ class ConstructorFields:
         self.__window = tk.Tk()
         self.tune_window()
         canvas = tk.Canvas(self.__window,
-                           width=config.column * config.size_of_cell,
-                           height=config.row * config.size_of_cell)
+                           width=config.column * config.size_of_cell - 2,
+                           height=config.row * config.size_of_cell - 2)
         for i in range(config.row):
             temp = []
             for j in range(config.column):

@@ -1,8 +1,9 @@
-from battlefield import Battlefield
-import config
-
 import tkinter as tk
+
 from PIL import ImageTk
+
+import config
+from battlefield import Battlefield
 
 
 class BattlefieldPlayer(Battlefield):

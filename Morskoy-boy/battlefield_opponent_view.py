@@ -1,8 +1,9 @@
-from battlefield import Battlefield
-import config
-
 import tkinter as tk
+
 from PIL import ImageTk
+
+import config
+from battlefield import Battlefield
 
 
 class BattlefieldOpponent(Battlefield):
@@ -12,6 +13,8 @@ class BattlefieldOpponent(Battlefield):
     # for each cell we store 0 or its ship
     __image_hit = "image.png"
     __image_miss = "image.png"
+
+    __quantity_call_let_me_move = 0
 
     def __init__(self, real_field, canvas):
         super().__init__(real_field)
@@ -45,8 +48,9 @@ class BattlefieldOpponent(Battlefield):
                                                 image=self.__image_miss)
 
     def __shot_and_update(self, x, y):
-        self._shot(x, y)
-        self.__update()
+        if self.__quantity_call_let_me_move:
+            self._shot(x, y)
+            self.__update()
 
     def __create_buttons(self):
         for i in range(config.ROW):
@@ -75,3 +79,8 @@ class BattlefieldOpponent(Battlefield):
                                     anchor="nw",
                                     window=label_frame)
         self.__create_buttons()
+
+    def let_me_move(self):
+        if not self.__quantity_call_let_me_move:
+            self._existence_of_raw_shot = False
+        self.__quantity_call_let_me_move += 1

@@ -1,6 +1,6 @@
-import config
-
 from itertools import product
+
+import config
 
 
 class Ship:

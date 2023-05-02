@@ -1,13 +1,10 @@
-from battlefield import Battlefield
-import config
-
 from random import randint
+
+import config
+from battlefield import Battlefield
 
 
 class BattlefieldBotPlayer(Battlefield):
-
-    def __init__(self, real_field):
-        super().__init__(real_field)
 
     def take_a_shot(self):
         probability_field = []

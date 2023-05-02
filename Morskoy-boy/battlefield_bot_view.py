@@ -1,10 +1,10 @@
+from itertools import product
+from random import randint
+from time import time
+
+import config
 from battlefield_opponent_view import BattlefieldOpponent
 from ship import Ship
-import config
-
-from random import randint
-from itertools import product
-from time import time
 
 
 class BattlefieldBotOpponent(BattlefieldOpponent):

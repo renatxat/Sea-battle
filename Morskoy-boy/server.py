@@ -1,6 +1,7 @@
 import socket
 import sys
 from collections import OrderedDict
+from pickle import loads
 from random import randint
 from threading import Thread
 from time import time
@@ -39,15 +40,13 @@ class Server:
                 thread2.start()
             else:
                 self.__pairs_port[client1] = 0
-                thread = Thread(target=self.__waiting_opponent, args=())
+                thread = Thread(target=self.__waiting_opponent, args=(client1,))
                 thread.start()
 
-    def __waiting_opponent(self):
+    def __waiting_opponent(self, conn):
         number = self.__quantity_users
         start_time = time()
         while number == self.__quantity_users:
-            conn, _ = self.__pairs_port.popitem()
-            self.__pairs_port[conn] = 0
             data = self.__recv_str(conn)
             if data or time() - start_time > config.TIME_WAITING_OPPONENT:
                 self.__pairs_port.popitem()
@@ -110,10 +109,10 @@ class Server:
         data = self.__recv_field(client)
         self.__is_ready_field[client] = True
         try:
-            if data:
-                while not self.__is_ready_field[self.__pairs_port[client]]:
-                    pass
-                self.__pairs_port[client].send(data)
+            while not self.__is_ready_field[self.__pairs_port[client]]:
+                pass
+            self.__pairs_port[client].send(data)
+            if loads(data):
                 print(sys.getsizeof(data))
             else:
                 # print("ROUND")
@@ -130,7 +129,7 @@ class Server:
                         req = self.__request(client, data)
                     if not req:
                         self.__remove_client(client)
-                        print("ROUND")
+                        # print("ROUND")
                         break
                     elif req == "same":
                         is_my_turn = is_my_turn
@@ -156,75 +155,3 @@ class Server:
 
 
 Server()
-"""
-
-conn1, addr = sock.accept()
-print('connected:', addr, conn1)
-conn2, addr = sock.accept()
-print('connected:', addr, conn2)
-conn1.send(bytes(True))
-data1 = conn1.recv(4096)
-print(sys.getsizeof(data1))
-conn2.send(bytes(False))
-data2 = conn2.recv(4096)
-print(sys.getsizeof(data2))
-conn2.send(data1)
-print(sys.getsizeof(data2))
-conn1.send(data2)
-
-data = conn1.recv(256)
-while True:
-    x = request(conn2, data)
-    if x == 0:
-        break
-    if request(conn2, data) == 1:
-        request(conn1, data)
-    else:
-        request(conn2, data)
-
-sock.close()
-
-
-
-
-
-
-
-
-
-
-import socket
-import os
-from _thread import *
-
-ServerSideSocket = socket.socket()
-host = '127.0.0.1'
-port = 2004
-ThreadCount = 0
-try:
-    ServerSideSocket.bind((host, port))
-except socket.error as e:
-    print(str(e))
-print('Socket is listening..')
-ServerSideSocket.listen(5)
-
-
-def multi_threaded_client(connection):
-    connection.send(str.encode('Server is working:'))
-    while True:
-        data = connection.recv(2048)
-        response = 'Server message: ' + data.decode('utf-8')
-        if not data:
-            break
-        connection.sendall(str.encode(response))
-    connection.close()
-
-
-while True:
-    Client, address = ServerSideSocket.accept()
-    print('Connected to: ' + address[0] + ':' + str(address[1]))
-    start_new_thread(multi_threaded_client, (Client,))
-    ThreadCount += 1
-    print('Thread Number: ' + str(ThreadCount))
-ServerSideSocket.close()
-"""

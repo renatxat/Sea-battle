@@ -126,13 +126,17 @@ class ConstructorFields:
         if time() - self.__start_time >= config.TIME_WAITING_CONSTRUCTOR_FIELD - self.__timer + 1:
             self.__timer = max(config.TIME_WAITING_CONSTRUCTOR_FIELD - int(time() - self.__start_time), 0)
             self.__lbl["text"] = self.__text_before_timer + f"({str(self.__timer)})"
-            if self.__timer == 0:
+            if self.__timer == 0 and not self.__window.is_destroyed():
                 self.__real_field = []
                 self.__is_ready = True
                 if messagebox.showerror(title="Ты чего наделал!?", message="Время вышло, вы проиграли :("):
                     self.__window.destroy()
 
     def __loop(self, n):
+        if self.__window.is_destroyed():
+            self.__real_field = []
+            self.__is_ready = True
+            return
         if self.__presence_timer:
             self.__update_timer()
         if not self.__is_ready:

@@ -21,7 +21,7 @@ class Client:
 
     __field = ["BattlefieldPlayer"]
     __foreign_field = ["BattlefieldOpponent"]
-    __data_field = 0
+    __data_field = "waiting"
 
     __label_turn = ["tk.Label()"]
     __label_wait = ["tk.Label()"]
@@ -31,7 +31,7 @@ class Client:
     __timer = config.TIME_WAITING_MOVE
     __start_time_move = "time()"
     __text_before_timer = str
-
+    __I_was_waiting_opponent = True
     __sock = ["socket.socket()"]
     __is_my_first_move = "waiting"
 
@@ -42,7 +42,7 @@ class Client:
         t = Thread(target=self.__get_is_my_first_move, args=(mem_lim,))
         t.start()
         self.__create_waiting_room()
-        self.__create_board()
+        self.__create_boards()
         self.__draw_boards()
         self.__start_loops()
 
@@ -72,41 +72,48 @@ class Client:
         start_time = time()
         boot_symbols = "|/–\\"
         number_symbols = 0
+        time_update_symbol = time()
         while self.__is_my_first_move == "waiting" or time() - start_time < config.TIME_WAITING_LOADING_WINDOW:
+            if self.__is_my_first_move != "waiting":
+                self.__I_was_waiting_opponent = False
             if window.is_destroyed() or self.__is_closing:
                 self.__sock.send(bytes("disconnect", encoding="UTF-8"))
                 self.__is_closing = True
                 break
-            number_symbols = (number_symbols + 1) % len(boot_symbols)
-            label_wait["text"] = label_wait["text"][:-1] + boot_symbols[number_symbols]
-            window.update()
-            delay_update_constant = 400
-            window.after(delay_update_constant)
+            if time() - time_update_symbol > 0.4:
+                time_update_symbol = time()
+                number_symbols = (number_symbols + 1) % len(boot_symbols)
+                label_wait["text"] = label_wait["text"][:-1] + boot_symbols[number_symbols]
+                window.update()
         window.destroy()
         if self.__is_my_first_move == "error":
-            messagebox.showinfo(title="Ошибка 14", message="Время ожидания истекло")
+            messagebox.showinfo(title="Ошибка 408", message="Время ожидания истекло...")
 
-    def __create_board(self):
+    def __create_boards(self):
         if self.__is_closing:
             self.__sock.close()
             return
-        start_time = time() - 1
+        start_time = time() + 1
+        # 1 second for drawing constructor_field
         constructor_field = ConstructorFields(presence_timer=True)
+        print(6)
         constructor_field = constructor_field.get()
+        self.__sock.send(dumps(constructor_field))
+        print(7)
         if not constructor_field:
+            print(8)
             self.__sock.close()
             self.__is_closing = True
             return
-        self.__sock.send(dumps(constructor_field))
-        time_wait = ceil(
-            config.TIME_WAITING_CONSTRUCTOR_FIELD + config.TIME_WAITING_LOADING_WINDOW - time() + start_time)
+        time_wait = ceil(config.TIME_WAITING_CONSTRUCTOR_FIELD + start_time - time() +
+                         config.TIME_WAITING_LOADING_WINDOW * self.__I_was_waiting_opponent)
         # opponent could start config.TIME_WAITING_LOADING_WINDOW seconds later, because he located in window waiting
-        t = Thread(target=self.__recv_field, args=(time_wait,))
-        t.start()
+        print(9)
         self.__update_timer_waiting_field(time_wait)
-        if not self.__data_field:
+        print(10)
+        if not self.__data_field and not self.__window.is_destroyed():
             self.__is_closing = True
-            self.__show_window_game_over("Мог, но не стал", "Ваш противник оказался тормозом :(")
+            self.__show_window_game_over("Мог, но не стал", "Ваш противник сдался :(")
             return
         self.__window.destroy()
         self.__window = Window(is_game_field=True)
@@ -133,30 +140,39 @@ class Client:
         self.__label_wait.pack()
         start_time = time() - 1
         text = self.__label_wait["text"]
-        while time_wait >= 0 and not self.__is_closing \
-                and not self.__data_field and not self.__window.is_destroyed():
+        t = Thread(target=self.__recv_field, args=(time_wait,))
+        t.start()
+        while time_wait >= 0 and not self.__is_closing and self.__data_field == "waiting" \
+                and not self.__window.is_destroyed():
             if time() - start_time >= 1:
                 start_time = time()
                 self.__label_wait["text"] = text + f"({str(time_wait)})"
                 time_wait -= 1
                 self.__window.update()
-        if not self.__window.is_destroyed():
+        if self.__data_field == "waiting":
+            self.__data_field = []
+        if self.__window.is_destroyed():
+            self.__is_closing = True
+        else:
             self.__label_wait["text"] = text + "(0)"
 
     def __recv_field(self, time_wait):
         try:
             self.__sock.settimeout(time_wait)
             mem_lim = 2048
+            print(0)
             data = self.__sock.recv(mem_lim)
+            print(1)
             self.__data_field = loads(data)
+            print(2)
         except TimeoutError:
-            self.__data_field = 0
+            self.__data_field = []
         except OSError:
-            self.__data_field = 0
+            self.__data_field = []
         except ValueError:
-            self.__data_field = 0
+            self.__data_field = []
         except EOFError:
-            self.__data_field = 0
+            self.__data_field = []
 
     def __draw_boards(self):
         if self.__is_closing:
@@ -219,10 +235,10 @@ class Client:
             self.__sock.send(bytes(self.__foreign_field.get_last_shot()))
             if not self.__foreign_field.existence_hit_last_shot():
                 self.__text_before_timer = "Ход противника"
-                self.__update_timer("red")
+                self.__create_timer("red")
                 self.__editing = "disconnection"
             else:
-                self.__update_timer("lime")
+                self.__create_timer("lime")
         elif self.__editing == "disconnection" and self.__label_turn["fg"] == "red":
             self.__editing = "waiting"
             t = Thread(target=self.__recv_tuple, args=())
@@ -236,19 +252,15 @@ class Client:
             self.__editing = "disconnection"
             if self.__field.existence_hit_last_shot():
                 self.__sock.send(bytes("same", encoding="UTF-8"))  # move same player
-                self.__update_timer("red")
+                self.__create_timer("red")
             else:
                 self.__sock.send(bytes("other", encoding="UTF-8"))  # move other player
                 self.__foreign_field.let_me_move()
                 self.__foreign_field.existence_hit_last_shot()
                 self.__text_before_timer = "Ваш ход"
-                self.__update_timer("lime")
+                self.__create_timer("lime")
         else:
-            if time() - self.__start_time_move >= config.TIME_WAITING_MOVE - self.__timer + 1:
-                self.__timer = max(config.TIME_WAITING_MOVE - int(time() - self.__start_time_move), 0)
-                self.__label_turn["text"] = self.__text_before_timer + f"({str(self.__timer)})"
-            if self.__timer == 0 and self.__label_turn["fg"] == "lime":
-                self.__show_window_game_over("Вы проиграли :(", "Время истекло")
+            self.__update_timer()
 
     def __recv_tuple(self):
         time_wait = config.TIME_WAITING_MOVE + 1
@@ -264,10 +276,17 @@ class Client:
         except ValueError:
             self.__data_field = 0
 
-    def __update_timer(self, color):
+    def __create_timer(self, color):
         self.__start_time_move = time()
         self.__timer = config.TIME_WAITING_MOVE + 1 + (color == "red")
         self.__label_turn.configure(text=self.__text_before_timer + f"({str(self.__timer)})", fg=color)
+
+    def __update_timer(self):
+        if time() - self.__start_time_move >= config.TIME_WAITING_MOVE - self.__timer + 1:
+            self.__timer = max(config.TIME_WAITING_MOVE - int(time() - self.__start_time_move), 0)
+            self.__label_turn["text"] = self.__text_before_timer + f"({str(self.__timer)})"
+        if self.__timer == 0 and self.__label_turn["fg"] == "lime":
+            self.__show_window_game_over("Вы проиграли :(", "Время истекло")
 
     def __check_game_over(self, n):
         if self.__foreign_field.get_run() and self.__field.get_run():

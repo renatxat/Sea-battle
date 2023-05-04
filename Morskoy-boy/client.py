@@ -51,7 +51,6 @@ class Client:
             self.__sock.settimeout(config.TIME_WAITING_OPPONENT + 1)
             data = self.__sock.recv(mem_lim)
             self.__is_my_first_move = len(list(data)) == 1
-            self.__sock.send(bytes("recd", encoding="UTF-8"))
         except TimeoutError:
             self.__is_closing = True
             self.__is_my_first_move = "error"
@@ -74,7 +73,8 @@ class Client:
         number_symbols = 0
         time_update_symbol = time()
         while self.__is_my_first_move == "waiting" or time() - start_time < config.TIME_WAITING_LOADING_WINDOW:
-            if self.__is_my_first_move != "waiting":
+            if self.__is_my_first_move != "waiting" and self.__I_was_waiting_opponent:
+                self.__sock.send(bytes("connect", encoding="UTF-8"))
                 self.__I_was_waiting_opponent = False
             if window.is_destroyed() or self.__is_closing:
                 self.__sock.send(bytes("disconnect", encoding="UTF-8"))
@@ -85,6 +85,8 @@ class Client:
                 number_symbols = (number_symbols + 1) % len(boot_symbols)
                 label_wait["text"] = label_wait["text"][:-1] + boot_symbols[number_symbols]
                 window.update()
+        if self.__is_my_first_move != "waiting" and self.__I_was_waiting_opponent:
+            self.__sock.send(bytes("connect", encoding="UTF-8"))
         window.destroy()
         if self.__is_my_first_move == "error":
             messagebox.showinfo(title="Ошибка 408", message="Время ожидания истекло...")
@@ -96,21 +98,18 @@ class Client:
         start_time = time() + 1
         # 1 second for drawing constructor_field
         constructor_field = ConstructorFields(presence_timer=True)
-        print(6)
         constructor_field = constructor_field.get()
+        while self.__is_my_first_move == "waiting":
+            pass
         self.__sock.send(dumps(constructor_field))
-        print(7)
         if not constructor_field:
-            print(8)
             self.__sock.close()
             self.__is_closing = True
             return
         time_wait = ceil(config.TIME_WAITING_CONSTRUCTOR_FIELD + start_time - time() +
                          config.TIME_WAITING_LOADING_WINDOW * self.__I_was_waiting_opponent)
         # opponent could start config.TIME_WAITING_LOADING_WINDOW seconds later, because he located in window waiting
-        print(9)
         self.__update_timer_waiting_field(time_wait)
-        print(10)
         if not self.__data_field and not self.__window.is_destroyed():
             self.__is_closing = True
             self.__show_window_game_over("Мог, но не стал", "Ваш противник сдался :(")
@@ -160,11 +159,8 @@ class Client:
         try:
             self.__sock.settimeout(time_wait)
             mem_lim = 2048
-            print(0)
             data = self.__sock.recv(mem_lim)
-            print(1)
             self.__data_field = loads(data)
-            print(2)
         except TimeoutError:
             self.__data_field = []
         except OSError:

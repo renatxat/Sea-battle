@@ -30,8 +30,8 @@ class BattlefieldPlayer(Battlefield):
                                bg="slateblue" if real_field[i][j] != 0 else "aqua")
                 temp.append(lbl)
             self.__labels.append(temp)
-        self.__image_cross = ImageTk.PhotoImage(file="cross.png")
-        self.__image_dot = ImageTk.PhotoImage(file="dot.png")
+        self.__image_cross = ImageTk.PhotoImage(file="src/cross.png")
+        self.__image_dot = ImageTk.PhotoImage(file="src/dot.png")
 
     def __create_labels(self):
         for i in range(config.ROW):

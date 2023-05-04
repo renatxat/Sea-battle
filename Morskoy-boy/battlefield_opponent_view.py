@@ -31,8 +31,8 @@ class BattlefieldOpponent(Battlefield):
         for i in range(config.ROW):
             for j in range(config.COLUMN):
                 self.__buttons[i][j]["command"] = lambda x=j, y=i: self.__shot_and_update(x, y)
-        self.__image_hit = ImageTk.PhotoImage(file="hit.png")
-        self.__image_miss = ImageTk.PhotoImage(file="water.png")
+        self.__image_hit = ImageTk.PhotoImage(file="src/hit.png")
+        self.__image_miss = ImageTk.PhotoImage(file="src/water.png")
 
     def __update(self):
         for x in range(config.COLUMN):

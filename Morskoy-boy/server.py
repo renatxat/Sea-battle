@@ -14,11 +14,11 @@ class Server:
     __quantity_users = 0
     __pairs_port = OrderedDict()
     __is_ready_field = {}
+    __still_waiting = {}
 
     def __init__(self):
         self.__sock = socket.socket()
         self.__sock.bind((config.HOST, config.PORT))
-        self.__sock.settimeout(None)
         self.__sock.listen(10000)
         self.__endless_loop()
 
@@ -27,6 +27,7 @@ class Server:
             client1, address = self.__sock.accept()
             print('connected:', address)
             self.__quantity_users += 1
+            self.__still_waiting[client1] = "waiting"
             if self.__quantity_users % 2 == 0:
                 client2, _ = self.__pairs_port.popitem()
                 self.__pairs_port[client2] = client1
@@ -34,6 +35,8 @@ class Server:
                 is_first = bool(randint(0, 1))
                 self.__is_ready_field[client1] = False
                 self.__is_ready_field[client2] = False
+                t = Thread(target=self.__recv_state_waiting, args=(client1,))
+                t.start()
                 thread1 = Thread(target=self.__run, args=(client1, is_first))
                 thread2 = Thread(target=self.__run, args=(client2, not is_first))
                 thread1.start()
@@ -46,19 +49,30 @@ class Server:
     def __waiting_opponent(self, conn):
         number = self.__quantity_users
         start_time = time()
-        while number == self.__quantity_users:
-            data = self.__recv_str(conn)
-            if data or time() - start_time > config.TIME_WAITING_OPPONENT:
+        t = Thread(target=self.__recv_state_waiting, args=(conn,))
+        t.start()
+        while number == self.__quantity_users and self.__still_waiting[conn] != "connect":
+            if self.__still_waiting[conn] == "disconnect" or time() - start_time > config.TIME_WAITING_OPPONENT:
                 self.__pairs_port.popitem()
                 self.__quantity_users -= 1
                 break
 
+    def __recv_state_waiting(self, conn):
+        conn.settimeout(None)
+        mem_lim = 128
+        data = bytes("", encoding="UTF-8")
+        while not data.decode("UTF-8"):
+            data = conn.recv(mem_lim)
+        self.__still_waiting[conn] = data.decode("UTF-8")
+
     @staticmethod
     def __recv_str(conn):
         mem_lim = 128
-        conn.settimeout(0.1)
+        conn.settimeout(0.2)
         try:
-            data = conn.recv(mem_lim)
+            data = 0
+            while not data:
+                data = conn.recv(mem_lim)
         except TimeoutError:
             return 0
         except ConnectionResetError:
@@ -71,7 +85,9 @@ class Server:
         time_wait = config.TIME_WAITING_MOVE
         conn.settimeout(time_wait)
         try:
-            data = conn.recv(mem_lim)
+            data = 0
+            while not data:
+                data = conn.recv(mem_lim)
         except TimeoutError:
             return 0
         except ConnectionResetError:
@@ -88,7 +104,9 @@ class Server:
         time_wait = config.TIME_WAITING_CONSTRUCTOR_FIELD + config.TIME_WAITING_LOADING_WINDOW
         conn.settimeout(time_wait)
         try:
-            data = conn.recv(mem_lim)
+            data = 0
+            while not data:
+                data = conn.recv(mem_lim)
             return data
         except TimeoutError:
             return 0
@@ -102,10 +120,8 @@ class Server:
     def __run(self, client, is_first):
         number_player = 2 - is_first
         client.send(bytes(number_player))
-        check = self.__recv_str(client)
-        if not check:
-            self.__remove_client(client)
-            return
+        while self.__still_waiting[client] == "waiting":
+            pass
         data = self.__recv_field(client)
         self.__is_ready_field[client] = True
         try:

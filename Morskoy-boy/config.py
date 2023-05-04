@@ -14,6 +14,6 @@ TIME_WAITING_LOADING_WINDOW = 3
 # quantity seconds for reading text with rule
 TIME_WAITING_OPPONENT = 300  # 5 minutes
 # quantity seconds for find an opponent
-# HOST = '194.58.120.40'
-HOST = 'localhost'
+HOST = '194.58.120.40'
+# HOST = 'localhost'
 PORT = 2005

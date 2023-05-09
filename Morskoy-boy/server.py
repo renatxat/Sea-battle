@@ -76,9 +76,11 @@ class Server:
     def __recv_str(conn):
         mem_lim = 128
         conn.settimeout(1)
+        time_wait = 1
+        start_time = time()
         try:
-            data = 0
-            while not data:
+            data = b""
+            while not data and time() - start_time <= time_wait:
                 data = conn.recv(mem_lim)
         except TimeoutError:
             return 0
@@ -90,10 +92,11 @@ class Server:
     def __recv_tuple(conn):
         mem_lim = 256
         time_wait = config.TIME_WAITING_MOVE
-        conn.settimeout(time_wait)
+        start_time = time()
+        conn.settimeout(1)
         try:
             data = 0
-            while not data:
+            while not data and time() - start_time <= time_wait:
                 data = conn.recv(mem_lim)
         except TimeoutError:
             return 0

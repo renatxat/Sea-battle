@@ -19,7 +19,7 @@ class Server:
     def __init__(self):
         self.__sock = socket.socket()
         self.__sock.bind((config.HOST, config.PORT))
-        self.__sock.listen(10000)
+        self.__sock.listen()
         self.__endless_loop()
 
     def __endless_loop(self):
@@ -48,27 +48,34 @@ class Server:
 
     def __waiting_opponent(self, conn):
         number = self.__quantity_users
-        start_time = time()
         t = Thread(target=self.__recv_state_waiting, args=(conn,))
         t.start()
         while number == self.__quantity_users and self.__still_waiting[conn] != "connect":
-            if self.__still_waiting[conn] == "disconnect" or time() - start_time > config.TIME_WAITING_OPPONENT:
+            if self.__still_waiting[conn] == "disconnect":
+                print("disconnected:", conn.getpeername())
                 self.__pairs_port.popitem()
                 self.__quantity_users -= 1
                 break
 
     def __recv_state_waiting(self, conn):
-        conn.settimeout(None)
+        conn.settimeout(1)
+        start_time = time()
         mem_lim = 128
         data = bytes("", encoding="UTF-8")
         while not data.decode("UTF-8"):
-            data = conn.recv(mem_lim)
+            if time() - start_time >= config.TIME_WAITING_OPPONENT + 1:
+                self.__still_waiting[conn] = "disconnect"
+                return
+            try:
+                data = conn.recv(mem_lim)
+            except TimeoutError:
+                pass
         self.__still_waiting[conn] = data.decode("UTF-8")
 
     @staticmethod
     def __recv_str(conn):
         mem_lim = 128
-        conn.settimeout(0.2)
+        conn.settimeout(1)
         try:
             data = 0
             while not data:

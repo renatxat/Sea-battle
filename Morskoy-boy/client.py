@@ -48,12 +48,20 @@ class Client:
 
     def __get_is_my_first_move(self, mem_lim):
         try:
-            self.__sock.settimeout(config.TIME_WAITING_OPPONENT + 1)
-            data = self.__sock.recv(mem_lim)
+            self.__sock.settimeout(0.1)
+            time_wait = config.TIME_WAITING_OPPONENT
+            start_time = time()
+            data = []
+            while not data and not self.__is_closing:
+                if time() - start_time >= time_wait:
+                    self.__is_closing = True
+                    self.__is_my_first_move = "error"
+                    return
+                try:
+                    data = self.__sock.recv(mem_lim)
+                except TimeoutError:
+                    pass
             self.__is_my_first_move = len(list(data)) == 1
-        except TimeoutError:
-            self.__is_closing = True
-            self.__is_my_first_move = "error"
         except OSError:
             self.__is_closing = True
             self.__is_my_first_move = "error"
@@ -85,7 +93,7 @@ class Client:
                 number_symbols = (number_symbols + 1) % len(boot_symbols)
                 label_wait["text"] = label_wait["text"][:-1] + boot_symbols[number_symbols]
                 window.update()
-        if self.__is_my_first_move != "waiting" and self.__I_was_waiting_opponent:
+        if self.__is_my_first_move != "waiting" and self.__I_was_waiting_opponent and not self.__is_closing:
             self.__sock.send(bytes("connect", encoding="UTF-8"))
         window.destroy()
         if self.__is_my_first_move == "error":
@@ -275,7 +283,7 @@ class Client:
     def __create_timer(self, color):
         self.__start_time_move = time()
         self.__timer = config.TIME_WAITING_MOVE + 1 + (color == "red")
-        self.__label_turn.configure(text=self.__text_before_timer + f"({str(self.__timer)})", fg=color)
+        self.__label_turn.configure(text=self.__text_before_timer + f"({str(self.__timer - 1)})", fg=color)
 
     def __update_timer(self):
         if time() - self.__start_time_move >= config.TIME_WAITING_MOVE - self.__timer + 1:

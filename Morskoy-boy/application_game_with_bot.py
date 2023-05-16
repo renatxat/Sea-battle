@@ -34,12 +34,13 @@ class Application:
             return
         self.__window = Window(is_game_field=True)
         if platform.startswith('win'):
-            resizing_constant = 4
+            constant_unnecessary_pixels = 4
         else:
-            resizing_constant = 2
+            constant_unnecessary_pixels = 2
+        # tkinter displays slightly differently on different OS ))
         self.__canvas = tk.Canvas(self.__window,
-                                  width=(config.COLUMN * 2 + 1) * config.SIZE_OF_CELL - resizing_constant,
-                                  height=(config.ROW + 1) * config.SIZE_OF_CELL - resizing_constant)
+                                  width=(config.COLUMN * 2 + 1) * config.SIZE_OF_CELL - constant_unnecessary_pixels,
+                                  height=(config.ROW + 1) * config.SIZE_OF_CELL - constant_unnecessary_pixels)
         # the order in which the fields are created is very important
         # it has to do with filling the canvas with buttons
         self.__foreign_field = BattlefieldBotOpponent(self.__canvas)
@@ -52,9 +53,11 @@ class Application:
             return
         self.__field.view()
         self.__foreign_field.view()
+        constant_number_of_frame_at_the_bottom = 3  # 1 for each field and 1 for turn
         label_frame = tk.Frame(self.__canvas,
                                width=(2 * config.COLUMN + 1) * config.SIZE_OF_CELL - 2 * (
-                                       (2 * config.COLUMN + 1) * config.SIZE_OF_CELL // 3),
+                                       (2 * config.COLUMN + 1) * config.SIZE_OF_CELL
+                                       // constant_number_of_frame_at_the_bottom),
                                height=config.SIZE_OF_CELL,
                                bg="white")
         label_frame.pack_propagate(False)
@@ -71,10 +74,11 @@ class Application:
             self.__label_turn.configure(text="Ход противника", fg="red")
             self.__bot_field.take_a_shot()
         self.__label_turn.pack(fill="both", expand=True)
-        self.__canvas.create_window(((2 * config.COLUMN + 1) * config.SIZE_OF_CELL // 3,
-                                     config.ROW * config.SIZE_OF_CELL),
-                                    anchor="nw",
-                                    window=label_frame)
+        self.__canvas.create_window(
+            ((2 * config.COLUMN + 1) * config.SIZE_OF_CELL // constant_number_of_frame_at_the_bottom,
+             config.ROW * config.SIZE_OF_CELL),
+            anchor="nw",
+            window=label_frame)
         self.__canvas.pack()
         self.__window.resizable(width=False, height=False)
 
@@ -98,8 +102,7 @@ class Application:
         elif self.__bot_field.presence_of_changes() and self.__label_turn["fg"] == "red":
             # objects in the tkinter can update more slowly than this cycle, so:
             self.__window.update()
-            delay_constant = 800
-            self.__canvas.after(delay_constant)
+            self.__canvas.after(config.TIME_WAITING_BOT_MOVE)
             self.__field.update(*self.__bot_field.get_last_shot())
             if not self.__bot_field.existence_hit_last_shot():
                 self.__foreign_field.existence_hit_last_shot()

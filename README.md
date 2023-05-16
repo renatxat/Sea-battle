@@ -4,22 +4,22 @@
 По поводу багов и ошибок писать на: t.me/renatxat
 
 Установка:
+На данный момент онлайн-сервер отключён, поэтому light способ не работает.
+Также вы не можете играть с разных устройств.
 
 Light:
-1) Pyinstaller.
-Запустите файл sea-battle.exe из папки /game/windows, если у вас windows.
-Зайдите в коносли в папку /game/linux и пропишите:
+Pyinstaller.
+- Если у вас windows, запустите файл sea-battle.exe из папки /game/windows
+- Eсли у вас linux, зайдите в консоли в папку /game/linux и пропишите:
 sudo chmod +x sea-battle && ./sea-battle
-если у вас linux.
-Воспользуйтесь другим способом, если у вас macos. 
+- Если у вас macos, то воспользуйтесь одним из других способов. 
 
 Medium:
-1) Docker. Скачайте sea-battle.tar из корня проекта.
-2) Распакуйте его при помощи docker load <sea-battle.tar
-3) Запустите полученный образ:
-docker run -i -t --rm -e DISPLAY=$DISPLAY -v /tmp/.X11-unix:/tmp/.X11-unix:ro --name="rdev" sea-battle
+Bash script.
+coming soon...
 
 Hard:
+Ручками.
 0) Установите python 3.10+ (иначе у вас могут вылетать ошибки в консоль)
 1) Запустите файл server.py при помощи команды:
 python3.10 server.py

@@ -38,15 +38,14 @@ class Client:
     def __init__(self):
         self.__sock = socket.socket()
         self.__sock.connect((config.HOST, config.PORT))
-        mem_lim = 128
-        t = Thread(target=self.__get_is_my_first_move, args=(mem_lim,))
+        t = Thread(target=self.__get_is_my_first_move, args=())
         t.start()
         self.__create_waiting_room()
         self.__create_boards()
         self.__draw_boards()
         self.__start_loops()
 
-    def __get_is_my_first_move(self, mem_lim):
+    def __get_is_my_first_move(self):
         try:
             self.__sock.settimeout(0.1)
             time_wait = config.TIME_WAITING_OPPONENT
@@ -58,7 +57,7 @@ class Client:
                     self.__is_my_first_move = "error"
                     return
                 try:
-                    data = self.__sock.recv(mem_lim)
+                    data = self.__sock.recv(config.MEMORY_LIMIT_STR)
                 except TimeoutError:
                     pass
             self.__is_my_first_move = len(list(data)) == 1
@@ -71,8 +70,8 @@ class Client:
         label_wait = tk.Label(window,
                               relief="solid",
                               font=("Comic Sans MS", 13, "bold"),
-                              text="""У вас будет 60 секунд, чтобы расставить корабли.
-На каждый ход даётся 15 секунд. Удачной игры!\nИщем соперника...\n |""",
+                              text=f"""У вас будет {config.TIME_WAITING_CONSTRUCTOR_FIELD} секунд, чтобы расставить \
+корабли.\n На каждый ход даётся 15 секунд. Удачной игры!\nИщем соперника...\n |""",
                               justify="center",
                               borderwidth=1)
         label_wait.pack()
@@ -88,7 +87,8 @@ class Client:
                 self.__sock.send(bytes("disconnect", encoding="UTF-8"))
                 self.__is_closing = True
                 break
-            if time() - time_update_symbol > 0.4:
+            constant_loading_icon_update_period = 0.4
+            if time() - time_update_symbol > constant_loading_icon_update_period:
                 time_update_symbol = time()
                 number_symbols = (number_symbols + 1) % len(boot_symbols)
                 label_wait["text"] = label_wait["text"][:-1] + boot_symbols[number_symbols]
@@ -125,12 +125,13 @@ class Client:
         self.__window.destroy()
         self.__window = Window(is_game_field=True)
         if platform.startswith('win'):
-            resizing_constant = 4
+            constant_unnecessary_pixels = 4
         else:
-            resizing_constant = 2
+            constant_unnecessary_pixels = 2
+        # tkinter displays slightly differently on different OS
         self.__canvas = tk.Canvas(self.__window,
-                                  width=(config.COLUMN * 2 + 1) * config.SIZE_OF_CELL - resizing_constant,
-                                  height=(config.ROW + 1) * config.SIZE_OF_CELL - resizing_constant)
+                                  width=(config.COLUMN * 2 + 1) * config.SIZE_OF_CELL - constant_unnecessary_pixels,
+                                  height=(config.ROW + 1) * config.SIZE_OF_CELL - constant_unnecessary_pixels)
         # the order in which the fields are created is very important
         # it has to do with filling the canvas with buttons
         self.__foreign_field = BattlefieldOpponent(self.__data_field, self.__canvas)
@@ -166,8 +167,7 @@ class Client:
     def __recv_field(self, time_wait):
         try:
             self.__sock.settimeout(time_wait)
-            mem_lim = 2048
-            data = self.__sock.recv(mem_lim)
+            data = self.__sock.recv(config.MEMORY_LIMIT_FIELD)
             self.__data_field = loads(data)
         except TimeoutError:
             self.__data_field = []
@@ -270,8 +270,7 @@ class Client:
         time_wait = config.TIME_WAITING_MOVE + 1
         try:
             self.__sock.settimeout(time_wait)
-            mem_lim = 256
-            data = self.__sock.recv(mem_lim)
+            data = self.__sock.recv(config.MEMORY_LIMIT_TUPLE)
             self.__editing = tuple(data)
         except TimeoutError:
             self.__editing = 0
@@ -300,18 +299,18 @@ class Client:
         else:
             self.__show_window_game_over("Лох", "Вы проиграли :(")
 
-    def __show_window_game_over(self, ttl, msg):
+    def __show_window_game_over(self, title, message):
         try:
             self.__sock.close()
             self.__window.grab_set()
-            if ttl == "Чел, хорош!" or ttl == "Лох":
-                if messagebox.showinfo(title=ttl,
-                                       message=msg,
+            if title == "Чел, хорош!" or title == "Лох":
+                if messagebox.showinfo(title=title,
+                                       message=message,
                                        parent=self.__window):
                     self.__window.destroy()
             else:
-                if messagebox.showwarning(title=ttl,
-                                          message=msg,
+                if messagebox.showwarning(title=title,
+                                          message=message,
                                           parent=self.__window):
                     self.__window.destroy()
         except TclError:

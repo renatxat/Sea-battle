@@ -60,28 +60,26 @@ class Server:
     def __recv_state_waiting(self, conn):
         conn.settimeout(1)
         start_time = time()
-        mem_lim = 128
         data = bytes("", encoding="UTF-8")
         while not data.decode("UTF-8"):
             if time() - start_time >= config.TIME_WAITING_OPPONENT + 1:
                 self.__still_waiting[conn] = "disconnect"
                 return
             try:
-                data = conn.recv(mem_lim)
+                data = conn.recv(config.MEMORY_LIMIT_STR)
             except TimeoutError:
                 pass
         self.__still_waiting[conn] = data.decode("UTF-8")
 
     @staticmethod
     def __recv_str(conn):
-        mem_lim = 128
         conn.settimeout(1)
         time_wait = 1
         start_time = time()
         try:
             data = b""
             while not data and time() - start_time <= time_wait:
-                data = conn.recv(mem_lim)
+                data = conn.recv(config.MEMORY_LIMIT_STR)
         except TimeoutError:
             return 0
         except ConnectionResetError:
@@ -90,14 +88,13 @@ class Server:
 
     @staticmethod
     def __recv_tuple(conn):
-        mem_lim = 256
         time_wait = config.TIME_WAITING_MOVE
         start_time = time()
         conn.settimeout(1)
         try:
             data = 0
             while not data and time() - start_time <= time_wait:
-                data = conn.recv(mem_lim)
+                data = conn.recv(config.MEMORY_LIMIT_TUPLE)
         except TimeoutError:
             return 0
         except ConnectionResetError:
@@ -110,13 +107,12 @@ class Server:
 
     @staticmethod
     def __recv_field(conn):
-        mem_lim = 2048
         time_wait = config.TIME_WAITING_CONSTRUCTOR_FIELD + config.TIME_WAITING_LOADING_WINDOW
         conn.settimeout(time_wait)
         try:
             data = 0
             while not data:
-                data = conn.recv(mem_lim)
+                data = conn.recv(config.MEMORY_LIMIT_FIELD)
             return data
         except TimeoutError:
             return 0

@@ -1,6 +1,5 @@
 from itertools import product
 from random import randint
-from time import time
 
 import config
 from battlefield_opponent_view import BattlefieldOpponent
@@ -22,12 +21,7 @@ class BattlefieldBotOpponent(BattlefieldOpponent):
 
     def __arrange_the_ships(self):
         number_ships = 0
-        start_time = time()
         while number_ships != len(config.SHIP_SIZES):
-            wait_constant = 10
-            if time() - start_time > wait_constant:
-                self.__init__(self.__canvas)
-
             size = config.SHIP_SIZES[number_ships]
             index = randint(0, len(self.__probability_field) - 1)
             x, y = self.__probability_field[index]

@@ -1,21 +1,18 @@
-from battlefield import Battlefield
-import config
-
 from random import randint
+
+import config
+from battlefield import Battlefield
 
 
 class BattlefieldBotPlayer(Battlefield):
 
-    def __init__(self, real_field):
-        super().__init__(real_field)
-
     def take_a_shot(self):
         probability_field = []
         probability_field_only_hit = []
-        constant_to_drop_fields_only_hit = 13
+        constant_to_drop_fields_only_hit = 12
         # needed to make the bot hit more often
-        for x in range(config.column):
-            for y in range(config.row):
+        for x in range(config.COLUMN):
+            for y in range(config.ROW):
                 if not isinstance(self._field[y][x], str):
                     probability_field.append((x, y))
                 if not isinstance(self._field[y][x], (str, int)):

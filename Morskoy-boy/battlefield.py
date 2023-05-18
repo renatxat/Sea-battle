@@ -7,8 +7,7 @@ class Battlefield:
     __number_call_exist_hit_last_shot = 0
 
     def __init__(self, real_field):
-        self.__quantity_ships = len(
-            set([j for i in real_field for j in i])) - 1
+        self.__quantity_ships = len(set([j for i in real_field for j in i])) - 1
         self._field = real_field
         self.__last_shot = (0, 0)
 

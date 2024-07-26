@@ -90,7 +90,7 @@ class Server:
     def __recv_tuple(conn):
         time_wait = config.TIME_WAITING_MOVE
         start_time = time()
-        conn.settimeout(1)
+        conn.settimeout(time_wait)
         try:
             data = 0
             while not data and time() - start_time <= time_wait:

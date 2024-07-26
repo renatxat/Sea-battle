@@ -9,7 +9,7 @@ class BattlefieldBotPlayer(Battlefield):
     def take_a_shot(self):
         probability_field = []
         probability_field_only_hit = []
-        constant_to_drop_fields_only_hit = 12
+        constant_to_drop_fields_only_hit = 10
         # needed to make the bot hit more often
         for x in range(config.COLUMN):
             for y in range(config.ROW):

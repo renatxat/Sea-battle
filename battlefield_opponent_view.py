@@ -1,10 +1,9 @@
 import tkinter as tk
-
 from PIL import ImageTk
 
 import config
 from battlefield import Battlefield
-
+from window import resource_path
 
 class BattlefieldOpponent(Battlefield):
     __canvas = ["tk.Canvas()"]
@@ -31,8 +30,8 @@ class BattlefieldOpponent(Battlefield):
         for i in range(config.ROW):
             for j in range(config.COLUMN):
                 self.__buttons[i][j]["command"] = lambda x=j, y=i: self.__shot_and_update(x, y)
-        self.__image_hit = ImageTk.PhotoImage(file="src/hit.png")
-        self.__image_miss = ImageTk.PhotoImage(file="src/water.png")
+        self.__image_hit = ImageTk.PhotoImage(file=resource_path("src/hit.png"))
+        self.__image_miss = ImageTk.PhotoImage(file=resource_path("src/water.png"))
 
     def __update(self):
         for x in range(config.COLUMN):
@@ -46,7 +45,6 @@ class BattlefieldOpponent(Battlefield):
                     self.__buttons[y][x].config(bg="light blue",
                                                 command=0,
                                                 image=self.__image_miss)
-
     def __shot_and_update(self, x, y):
         if self.__quantity_call_let_me_move:
             self._shot(x, y)

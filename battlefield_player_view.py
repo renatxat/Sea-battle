@@ -1,9 +1,9 @@
 import tkinter as tk
-
 from PIL import ImageTk
 
 import config
 from battlefield import Battlefield
+from window import resource_path
 
 
 class BattlefieldPlayer(Battlefield):
@@ -30,8 +30,8 @@ class BattlefieldPlayer(Battlefield):
                                bg="slateblue" if real_field[i][j] != 0 else "aqua")
                 temp.append(lbl)
             self.__labels.append(temp)
-        self.__image_cross = ImageTk.PhotoImage(file="src/cross.png")
-        self.__image_dot = ImageTk.PhotoImage(file="src/dot.png")
+        self.__image_cross = ImageTk.PhotoImage(file=resource_path("src/cross.png"))
+        self.__image_dot = ImageTk.PhotoImage(file=resource_path("src/dot.png"))
 
     def __create_labels(self):
         for i in range(config.ROW):

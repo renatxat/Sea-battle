@@ -1,7 +1,8 @@
 import tkinter as tk
 from _tkinter import TclError
 from tkinter import messagebox
-import os, sys
+import os
+import sys
 
 import config
 from PIL import ImageTk
@@ -29,9 +30,9 @@ class Window(tk.Tk):
 
     def __tune_window(self):
         self.title("Морской Бой")
-        # self.tk.call("wm", "iconphoto", self._w, tk.PhotoImage(file="src/main_icon.png"))
-        self.img = self.__image_hit = ImageTk.PhotoImage(file=resource_path("src/main_icon.png"))
-        self.wm_iconphoto(False, self.img)
+        self.tk.call("wm", "iconphoto", self._w, tk.PhotoImage(file="src/main_icon.png"))
+        img = ImageTk.PhotoImage(file=resource_path("src/main_icon.png"))
+        self.wm_iconphoto(False, img)
         self.protocol("WM_DELETE_WINDOW", self.__on_closing)
         self.call('wm', 'attributes', '.', '-topmost', '1')
         x = (self.winfo_screenwidth() - self.winfo_reqwidth()) / 2

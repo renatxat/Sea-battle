@@ -4,6 +4,7 @@ from tkinter import messagebox
 
 import config
 from ship import Ship
+from battlefield_bot_view import BattlefieldBotOpponent
 from window import Window
 
 
@@ -17,16 +18,22 @@ class ConstructorFields:
 
     __real_field = [["zeros and Ships"]]
     __is_ready = False
+    __is_need_for_randomness = False
 
     __start_time = "time()"
     __timer = 0
     __text_before_timer = str
 
-    def __init__(self, presence_timer):
+    def __init__(self, presence_timer, is_need_for_randomness=False):
         self.__presence_timer = presence_timer
+        if is_need_for_randomness:
+            self.__is_need_for_randomness = True
+            self.__real_field = (BattlefieldBotOpponent(is_only_generation=True)).real_field
+            self.__is_ready = True
+            return
         self.__real_field = [[0 for _ in range(config.COLUMN)] for _ in range(config.ROW)]
         self.__ship = []
-        self.__window = Window(False)
+        self.__window = Window(is_game_field=False)
         self.__timer = config.TIME_WAITING_CONSTRUCTOR_FIELD + 1
         self.__create_creation_window()
 
@@ -146,7 +153,8 @@ class ConstructorFields:
             self.__window.destroy()
 
     def get(self):
-        self.__window.destroy()
+        if not self.__is_need_for_randomness:
+            self.__window.destroy()
         if self.__is_ready:
             return self.__real_field
         return False

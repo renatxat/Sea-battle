@@ -9,15 +9,15 @@ from ship import Ship
 class BattlefieldBotOpponent(BattlefieldOpponent):
     __probability_field = [(int, int)]
     __dict_index_elem = {(int, int): int}
-    __canvas = ["tk.Canvas()"]
 
-    def __init__(self, canvas):
-        self.__canvas = canvas
+    def __init__(self, is_only_generation, canvas="doesn't needed when prev==False"):
         self.__probability_field = [(x, y) for x in range(config.COLUMN) for y in range(config.ROW)]
         self.__dict_index_elem = {(x, y): x * config.ROW + y for x in range(config.COLUMN) for y in range(config.ROW)}
         self.real_field = [[0 for _ in range(config.COLUMN)] for _ in range(config.ROW)]
         self.__arrange_the_ships()
-        super().__init__(self.real_field, self.__canvas)
+        if is_only_generation:
+            return
+        super().__init__(self.real_field, canvas)
 
     def __arrange_the_ships(self):
         number_ships = 0

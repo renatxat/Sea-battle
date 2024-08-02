@@ -5,6 +5,7 @@ import config
 from battlefield import Battlefield
 from window import resource_path
 
+
 class BattlefieldOpponent(Battlefield):
     __canvas = ["tk.Canvas()"]
     # what the player sees
@@ -45,6 +46,7 @@ class BattlefieldOpponent(Battlefield):
                     self.__buttons[y][x].config(bg="light blue",
                                                 command=0,
                                                 image=self.__image_miss)
+
     def __shot_and_update(self, x, y):
         if self.__quantity_call_let_me_move:
             self._shot(x, y)

@@ -21,13 +21,13 @@ class Application:
     __label_turn = ["tk.Label()"]
     __is_closing = False
 
-    def __init__(self, is_my_first_move):
-        self.__create_board()
+    def __init__(self, is_need_for_randomness, is_my_first_move):
+        self.__create_board(is_need_for_randomness)
         self.__draw_boards(is_my_first_move)
         self.__start_loops()
 
-    def __create_board(self):
-        constructor_field = ConstructorFields(presence_timer=False)
+    def __create_board(self, is_need_for_randomness):
+        constructor_field = ConstructorFields(presence_timer=False, is_need_for_randomness=is_need_for_randomness)
         constructor_field = constructor_field.get()
         if not constructor_field:
             self.__is_closing = True
@@ -43,7 +43,7 @@ class Application:
                                   height=(config.ROW + 1) * config.SIZE_OF_CELL - constant_unnecessary_pixels)
         # the order in which the fields are created is very important
         # it has to do with filling the canvas with buttons
-        self.__foreign_field = BattlefieldBotOpponent(self.__canvas)
+        self.__foreign_field = BattlefieldBotOpponent(is_only_generation=False, canvas=self.__canvas)
         self.__field = BattlefieldPlayer(constructor_field + [], self.__canvas)
 
         self.__bot_field = BattlefieldBotPlayer(constructor_field + [])

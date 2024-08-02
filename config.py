@@ -6,6 +6,8 @@ SIZE_OF_CELL = 32
 # size of each field cells in pixels
 SHIP_SIZES = [4, 3, 3, 2, 2, 2, 1, 1, 1, 1]
 # ship sizes in order of input
+NUMBER_OF_SHOTS_FIELDS_ONLY_HITS = 8
+# needed to make the bot hit more often; the more this, the more accurate the bot
 TIME_WAITING_BOT_MOVE = 800  # 0.8 seconds
 # quantity milliseconds for move bot in game with bot
 TIME_WAITING_MOVE = 15

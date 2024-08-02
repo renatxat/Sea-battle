@@ -66,11 +66,17 @@ class BattlefieldPlayer(Battlefield):
     def update(self, x, y):
         self._existence_of_raw_shot = False
         self._shot(x, y)
+        self.__labels[y][x + 1].config(bg="yellow")
         for x in range(config.COLUMN):
             for y in range(config.ROW):
-                if self._field[y][x] == "hit" and self.__labels[y][x + 1]["image"] == "":
+                if self._field[y][x] == "hit" and self.__labels[y][x + 1]["image"] == "":  # last move
                     self.__labels[y][x + 1].config(image=self.__image_cross,
-                                                   relief="flat")
-
+                                                   relief="flat",
+                                                   bg="orange")
+                elif self._field[y][x] == "hit" and self.__labels[y][x + 1]["image"] != "":
+                    self.__labels[y][x + 1].config(bg="slateblue")
                 if self._field[y][x] == "miss" and self.__labels[y][x + 1]["image"] == "":
-                    self.__labels[y][x + 1].config(image=self.__image_dot)
+                    self.__labels[y][x + 1].config(image=self.__image_dot,
+                                                   bg="limegreen")
+                elif self._field[y][x] == "miss" and self.__labels[y][x + 1]["image"] != "":  # last move
+                    self.__labels[y][x + 1].config(bg="aqua")

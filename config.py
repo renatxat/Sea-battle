@@ -28,4 +28,4 @@ LOADING_ICON_UPDATE_PERIOD = 0.4
 # period of replacement symbol from |,/,–,\ (only style)
 HOST = 'localhost'
 # HOST = '194.58.120.40'
-PORT = 2005
+PORT = 50006

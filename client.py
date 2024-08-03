@@ -103,7 +103,7 @@ class Client:
         if self.__is_closing:
             self.__sock.close()
             return
-        start_time = time() + 1
+        start_time = time() + 1 - is_need_for_randomness
         # 1 second for drawing constructor_field
         constructor_field = ConstructorFields(presence_timer=True, is_need_for_randomness=is_need_for_randomness)
         constructor_field = constructor_field.get()

@@ -38,14 +38,14 @@ class BattlefieldOpponent(Battlefield):
         for x in range(config.COLUMN):
             for y in range(config.ROW):
                 if self._field[y][x] == "hit" and self.__buttons[y][x]["command"] != 0:
-                    self.__buttons[y][x].config(bg="crimson",
-                                                command=0,
+                    self.__buttons[y][x].config(command=0,
                                                 image=self.__image_hit,
-                                                relief="flat")
+                                                relief="flat",
+                                                bg="crimson")
                 if self._field[y][x] == "miss" and self.__buttons[y][x]["command"] != 0:
-                    self.__buttons[y][x].config(bg="light blue",
-                                                command=0,
-                                                image=self.__image_miss)
+                    self.__buttons[y][x].config(command=0,
+                                                image=self.__image_miss,
+                                                bg="light blue")
 
     def __shot_and_update(self, x, y):
         if self.__quantity_call_let_me_move:

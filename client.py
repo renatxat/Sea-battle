@@ -35,13 +35,13 @@ class Client:
     __sock = ["socket.socket()"]
     __is_my_first_move = "waiting"
 
-    def __init__(self):
+    def __init__(self, is_need_for_randomness):
         self.__sock = socket.socket()
         self.__sock.connect((config.HOST, config.PORT))
         t = Thread(target=self.__get_is_my_first_move, args=())
         t.start()
         self.__create_waiting_room()
-        self.__create_boards()
+        self.__create_boards(is_need_for_randomness)
         self.__draw_boards()
         self.__start_loops()
 
@@ -99,13 +99,13 @@ class Client:
         if self.__is_my_first_move == "error":
             messagebox.showinfo(title="Ошибка 408", message="Время ожидания истекло...")
 
-    def __create_boards(self):
+    def __create_boards(self, is_need_for_randomness):
         if self.__is_closing:
             self.__sock.close()
             return
         start_time = time() + 1
         # 1 second for drawing constructor_field
-        constructor_field = ConstructorFields(presence_timer=True)
+        constructor_field = ConstructorFields(presence_timer=True, is_need_for_randomness=is_need_for_randomness)
         constructor_field = constructor_field.get()
         while self.__is_my_first_move == "waiting":
             pass

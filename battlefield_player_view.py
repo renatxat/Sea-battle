@@ -7,7 +7,7 @@ from window import resource_path
 
 
 class BattlefieldPlayer(Battlefield):
-    # what the opponent sees
+    # what the player sees from the right
     __canvas = ["tk.Canvas()"]
     __labels = []
     __image_cross = "image.png"

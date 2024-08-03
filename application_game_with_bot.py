@@ -65,7 +65,7 @@ class Application:
                                      relief="solid",
                                      font=("Comic Sans MS", 13, "bold"),
                                      text="Ваш ход",
-                                     fg="lime",
+                                     fg="green2",
                                      justify="center",
                                      borderwidth=1)
         if my_first_move:
@@ -95,7 +95,7 @@ class Application:
         self.__check_game_over(n)
 
     def __click_processing(self):
-        if self.__foreign_field.presence_of_changes() and self.__label_turn["fg"] == "lime":
+        if self.__foreign_field.presence_of_changes() and self.__label_turn["fg"] == "green2":
             if not self.__foreign_field.existence_hit_last_shot():
                 self.__label_turn.configure(text="Ход противника", fg="red")
                 self.__bot_field.take_a_shot()
@@ -107,7 +107,7 @@ class Application:
             if not self.__bot_field.existence_hit_last_shot():
                 self.__foreign_field.existence_hit_last_shot()
                 self.__foreign_field.let_me_move()
-                self.__label_turn.configure(text="Ваш ход", fg="lime")
+                self.__label_turn.configure(text="Ваш ход", fg="green2")
             else:
                 self.__bot_field.take_a_shot()
 

@@ -66,7 +66,6 @@ class BattlefieldPlayer(Battlefield):
     def update(self, x, y):
         self._existence_of_raw_shot = False
         self._shot(x, y)
-        self.__labels[y][x + 1].config(bg="yellow")
         for x in range(config.COLUMN):
             for y in range(config.ROW):
                 if self._field[y][x] == "hit" and self.__labels[y][x + 1]["image"] == "":  # last move

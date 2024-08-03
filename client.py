@@ -209,7 +209,7 @@ class Client:
         if self.__is_my_first_move:
             self.__timer = config.TIME_WAITING_MOVE + 1
             self.__text_before_timer = "Ваш ход"
-            self.__label_turn.configure(text=self.__text_before_timer + f"({self.__timer})", fg="lime")
+            self.__label_turn.configure(text=self.__text_before_timer + f"({self.__timer})", fg="green2")
             self.__foreign_field.let_me_move()
         else:
             self.__timer = config.TIME_WAITING_MOVE + 2
@@ -240,14 +240,14 @@ class Client:
         self.__check_game_over(n)
 
     def __click_processing(self):
-        if self.__foreign_field.presence_of_changes() and self.__label_turn["fg"] == "lime":
+        if self.__foreign_field.presence_of_changes() and self.__label_turn["fg"] == "green2":
             self.__sock.send(bytes(self.__foreign_field.get_last_shot()))
             if not self.__foreign_field.existence_hit_last_shot():
                 self.__text_before_timer = "Ход противника"
                 self.__create_timer("red")
                 self.__editing = "disconnection"
             else:
-                self.__create_timer("lime")
+                self.__create_timer("green2")
         elif self.__editing == "disconnection" and self.__label_turn["fg"] == "red":
             self.__editing = "waiting"
             t = Thread(target=self.__recv_tuple, args=())
@@ -267,7 +267,7 @@ class Client:
                 self.__foreign_field.let_me_move()
                 self.__foreign_field.existence_hit_last_shot()
                 self.__text_before_timer = "Ваш ход"
-                self.__create_timer("lime")
+                self.__create_timer("green2")
         else:
             self.__update_timer()
 
@@ -293,7 +293,7 @@ class Client:
         if time() - self.__start_time_move >= config.TIME_WAITING_MOVE - self.__timer + 1:
             self.__timer = max(config.TIME_WAITING_MOVE - int(time() - self.__start_time_move), 0)
             self.__label_turn["text"] = self.__text_before_timer + f"({str(self.__timer)})"
-        if self.__timer == 0 and self.__label_turn["fg"] == "lime":
+        if self.__timer == 0 and self.__label_turn["fg"] == "green2":
             self.__show_window_game_over("Вы проиграли :(", "Время истекло")
 
     def __check_game_over(self, n):

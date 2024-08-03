@@ -30,7 +30,7 @@ class Window(tk.Tk):
 
     def __tune_window(self):
         self.title("Морской Бой")
-        self.tk.call("wm", "iconphoto", self._w, tk.PhotoImage(file="src/main_icon.png"))
+        self.tk.call("wm", "iconphoto", self._w, tk.PhotoImage(file=resource_path("src/main_icon.png")))
         img = ImageTk.PhotoImage(file=resource_path("src/main_icon.png"))
         self.wm_iconphoto(False, img)
         self.protocol("WM_DELETE_WINDOW", self.__on_closing)

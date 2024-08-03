@@ -7,7 +7,7 @@ a = Analysis(
     ['main.py'],
     pathex=[],
     binaries=[],
-    datas=[('src/main_icon.png', 'src'), ('src/main_icon.ico', 'src'), ('src/cross.png', 'src'), ('src/water.png', 'src'), ('src/hit.png', 'src'), ('src/dot.png', 'src'), ('src/pixel.png', 'src')],
+    datas=[('src/main_icon.png', 'src'), ('src/cross.png', 'src'), ('src/water.png', 'src'), ('src/hit.png', 'src'), ('src/dot.png', 'src'), ('src/pixel.png', 'src')],
     hiddenimports=['PIL', 'PIL._tkinter_finder'],
     hookspath=[],
     hooksconfig={},
@@ -41,5 +41,5 @@ exe = EXE(
     target_arch=None,
     codesign_identity=None,
     entitlements_file=None,
-    icon=['src/main_icon.ico'],
+    icon=['src/main_icon.png'],
 )

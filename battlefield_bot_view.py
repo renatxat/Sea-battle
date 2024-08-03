@@ -11,18 +11,25 @@ class BattlefieldBotOpponent(BattlefieldOpponent):
     __dict_index_elem = {(int, int): int}
 
     def __init__(self, is_only_generation, canvas="doesn't needed when prev==False"):
+        self.__attempt_to_arrange_the_ships()
+        if is_only_generation:
+            return
+        super().__init__(self.real_field, canvas)
+
+    def __attempt_to_arrange_the_ships(self):
+        # runs into the depth of recursion for non-standard field
         self.__probability_field = [(x, y) for x in range(config.COLUMN) for y in range(config.ROW)]
         self.__dict_index_elem = {(x, y): x * config.ROW + y for x in range(config.COLUMN) for y in range(config.ROW)}
         self.real_field = [[0 for _ in range(config.COLUMN)] for _ in range(config.ROW)]
         self.__arrange_the_ships()
-        if is_only_generation:
-            return
-        super().__init__(self.real_field, canvas)
 
     def __arrange_the_ships(self):
         number_ships = 0
         while number_ships != len(config.SHIP_SIZES):
             size = config.SHIP_SIZES[number_ships]
+            if len(self.__probability_field) - 1 < 0:
+                self.__attempt_to_arrange_the_ships()
+                break
             index = randint(0, len(self.__probability_field) - 1)
             x, y = self.__probability_field[index]
             vertical = randint(0, 1)

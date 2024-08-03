@@ -18,7 +18,7 @@ Pyinstaller.
 - Если у вас windows, запустите файл sea-battle.exe из папки game/windows
 - Eсли у вас ubuntu linux, пропишите в командную строку:
 ```sudo chmod +x ./game/linux/sea-battle && ./game/linux/sea-battle```
-- Eсли у вас macos, пропишите в командную строку: (НЕ РЕКОМЕНДУЕТСЯ)
+- Eсли у вас macos, пропишите в командную строку:
 ```chmod +x ./game/macos/sea-battle && ./game/macos/sea-battle```
 - Если не сработало, то воспользуйтесь одним из вариантов ниже
 

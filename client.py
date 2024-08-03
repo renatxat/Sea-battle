@@ -83,12 +83,12 @@ class Client:
             if self.__is_my_first_move != "waiting" and self.__I_was_waiting_opponent:
                 self.__sock.send(bytes("connect", encoding="UTF-8"))
                 self.__I_was_waiting_opponent = False
+                # both are False if both chose automatically arrangement
             if window.is_destroyed() or self.__is_closing:
                 self.__sock.send(bytes("disconnect", encoding="UTF-8"))
                 self.__is_closing = True
                 break
-            constant_loading_icon_update_period = 0.4
-            if time() - time_update_symbol > constant_loading_icon_update_period:
+            if time() - time_update_symbol > config.LOADING_ICON_UPDATE_PERIOD:
                 time_update_symbol = time()
                 number_symbols = (number_symbols + 1) % len(boot_symbols)
                 label_wait["text"] = label_wait["text"][:-1] + boot_symbols[number_symbols]
@@ -109,15 +109,18 @@ class Client:
         constructor_field = constructor_field.get()
         while self.__is_my_first_move == "waiting":
             pass
-        self.__sock.send(dumps(constructor_field))
         if not constructor_field:
             self.__sock.close()
             self.__is_closing = True
             return
+        self.__sock.send(dumps(constructor_field))
         time_wait = ceil(config.TIME_WAITING_CONSTRUCTOR_FIELD + start_time - time() +
-                         config.TIME_WAITING_LOADING_WINDOW * self.__I_was_waiting_opponent)
+                         config.TIME_WAITING_LOADING_WINDOW * (self.__I_was_waiting_opponent or
+                                                               is_need_for_randomness))
         # opponent could start config.TIME_WAITING_LOADING_WINDOW seconds later, because he located in window waiting
         self.__update_timer_waiting_field(time_wait)
+        if self.__is_closing:
+            return
         if not self.__data_field and not self.__window.is_destroyed():
             self.__is_closing = True
             self.__show_window_game_over("Мог, но не стал", "Ваш противник сдался :(")
@@ -150,6 +153,7 @@ class Client:
         text = self.__label_wait["text"]
         t = Thread(target=self.__recv_field, args=(time_wait,))
         t.start()
+
         while time_wait >= 0 and not self.__is_closing and self.__data_field == "waiting" \
                 and not self.__window.is_destroyed():
             if time() - start_time >= 1:
@@ -157,6 +161,7 @@ class Client:
                 self.__label_wait["text"] = text + f"({str(time_wait)})"
                 time_wait -= 1
                 self.__window.update()
+
         if self.__data_field == "waiting":
             self.__data_field = []
         if self.__window.is_destroyed():

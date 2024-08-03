@@ -24,6 +24,8 @@ MEMORY_LIMIT_STR = 128
 # quantity bytes to send string
 MEMORY_LIMIT_TUPLE = 256
 # quantity bytes to send tuple
+LOADING_ICON_UPDATE_PERIOD = 0.4
+# period of replacement symbol from |,/,–,\ (only style)
 HOST = 'localhost'
 # HOST = '194.58.120.40'
 PORT = 2005

@@ -45,8 +45,8 @@ class Window(tk.Tk):
 
     def destroy(self):
         if not self.__is_destroyed:
-            super().destroy()
             self.__is_destroyed = True
+            super().destroy()
 
     def __on_closing(self):
         try:

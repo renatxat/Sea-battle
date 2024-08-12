@@ -24,7 +24,7 @@ class BattlefieldOpponent(Battlefield):
             temp = []
             for j in range(config.COLUMN):
                 btn = tk.Button(self.__canvas,
-                                default="disabled",
+                                state="normal",
                                 width=config.SIZE_OF_CELL,
                                 height=config.SIZE_OF_CELL,
                                 relief="groove",
@@ -42,17 +42,14 @@ class BattlefieldOpponent(Battlefield):
         for x in range(config.COLUMN):
             for y in range(config.ROW):
                 if self._field[y][x] == "hit" and self.__buttons[y][x]["command"] != 0:
-                    self.__buttons[y][x].config(command=0,
+                    self.__buttons[y][x].config(command=None,
+                                                bg="crimson",
                                                 image=self.__image_hit,
-                                                default="normal",
-                                                relief="flat",
-                                                bg="crimson")
+                                                relief="flat")
                 if self._field[y][x] == "miss" and self.__buttons[y][x]["command"] != 0:
-                    self.__buttons[y][x].config(command=0,
-                                                default="normal",
+                    self.__buttons[y][x].config(command=None,
                                                 image=self.__image_miss,
-                                                bg="light blue",
-                                                )
+                                                bg="light blue")
 
     def __shot_and_update(self, x, y):
         if self.__quantity_call_let_me_move:

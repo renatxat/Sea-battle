@@ -39,7 +39,7 @@ class ConstructorFields:
 
     def __add(self, x, y):
         self.__ship.append((x, y))
-        self.__buttons[y][x].config(command=0,
+        self.__buttons[y][x].config(command=None,
                                     bg="slateblue",
                                     state="disabled")
 
@@ -54,7 +54,8 @@ class ConstructorFields:
                                 bg="aqua",
                                 width=config.SIZE_OF_CELL,
                                 height=config.SIZE_OF_CELL,
-                                borderwidth=2)
+                                borderwidth=1,
+                                activebackground='light gray')
                 temp.append(btn)
             self.__buttons.append(temp)
         for i in range(config.ROW):
@@ -108,7 +109,7 @@ class ConstructorFields:
                 for x, y in self.__ship:
                     self.__real_field[y][x] = real_ship
                 for x, y in real_ship.get_environment():
-                    self.__buttons[y][x].config(command=0,
+                    self.__buttons[y][x].config(command=None,
                                                 bg="powderblue",
                                                 state="disabled")
                 self.__ship = []

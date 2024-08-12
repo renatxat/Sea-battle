@@ -2,8 +2,9 @@ import tkinter as tk
 from PIL import ImageTk
 
 import config
+from wrappers import Button
 from battlefield import Battlefield
-from window import resource_path
+from wrappers import resource_path
 
 
 class BattlefieldOpponent(Battlefield):
@@ -23,13 +24,11 @@ class BattlefieldOpponent(Battlefield):
         for i in range(config.ROW):
             temp = []
             for j in range(config.COLUMN):
-                btn = tk.Button(self.__canvas,
-                                state="normal",
-                                width=config.SIZE_OF_CELL,
-                                height=config.SIZE_OF_CELL,
-                                relief="groove",
-                                borderwidth=1,
-                                activebackground='light gray')
+                btn = Button(self.__canvas,
+                             width=config.SIZE_OF_CELL,
+                             height=config.SIZE_OF_CELL,
+                             borderwidth=1,
+                             bg="floral white")
                 temp.append(btn)
             self.__buttons.append(temp)
         for i in range(config.ROW):
@@ -42,14 +41,17 @@ class BattlefieldOpponent(Battlefield):
         for x in range(config.COLUMN):
             for y in range(config.ROW):
                 if self._field[y][x] == "hit" and self.__buttons[y][x]["command"] != 0:
-                    self.__buttons[y][x].config(command=None,
-                                                bg="crimson",
+                    self.__buttons[y][x].config(command=0,
                                                 image=self.__image_hit,
-                                                relief="flat")
+                                                relief="flat",
+                                                bg="crimson",
+                                                activebackground="crimson")
                 if self._field[y][x] == "miss" and self.__buttons[y][x]["command"] != 0:
-                    self.__buttons[y][x].config(command=None,
+                    self.__buttons[y][x].config(command=0,
                                                 image=self.__image_miss,
-                                                bg="light blue")
+                                                relief="flat",
+                                                bg="light blue",
+                                                activebackground="light blue")
 
     def __shot_and_update(self, x, y):
         if self.__quantity_call_let_me_move:

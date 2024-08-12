@@ -34,14 +34,14 @@ class Window(tk.Tk):
         img = ImageTk.PhotoImage(file=resource_path("src/main_icon.png"))
         self.wm_iconphoto(False, img)
         self.protocol("WM_DELETE_WINDOW", self.__on_closing)
-        self.call('wm', 'attributes', '.', '-topmost', '1')
+        self.call("wm", "attributes", ".", "-topmost", "1")
         x = (self.winfo_screenwidth() - self.winfo_reqwidth()) / 2
         y = (self.winfo_screenheight() - self.winfo_reqheight()) / 2
         if self.__is_game_field:
             x = x - config.SIZE_OF_CELL * config.COLUMN
             y = y - config.SIZE_OF_CELL * config.ROW // 2
         self.wm_geometry("+%d+%d" % (x, y))
-        self.resizable(width=False, height=False)  # don't work on linux ubuntu
+        self.resizable(width=False, height=False)  # don"t work on linux ubuntu
 
     def destroy(self):
         if not self.__is_destroyed:
@@ -58,3 +58,40 @@ class Window(tk.Tk):
 
     def is_destroyed(self):
         return self.__is_destroyed
+
+
+if sys.platform.startswith("darwin"):
+    constant_unnecessary_pixels = 6
+    from tkmacosx import Button as OriginalButton
+elif sys.platform.startswith('win'):
+    constant_unnecessary_pixels = 4
+    OriginalButton = tk.Button
+else:
+    constant_unnecessary_pixels = 2
+    OriginalButton = tk.Button
+    # tkinter displays slightly differently on different OS ))
+
+
+class Button(OriginalButton):
+    bindings = {
+        "<FocusIn>": {"default": "active"},  # for Keyboard focus
+        "<FocusOut>": {"default": "normal"},
+        "<Enter>": {"state": "active"},  # for Mouse focus
+        "<Leave>": {"state": "normal"}
+    }
+
+    def __init(self, *args, **kwargs):
+        super().__init__(self, *args, **kwargs)
+        self.custom_responsive_button()
+
+    def custom_responsive_button(self):
+        # Set the bindings for the button instance
+        for key, value in self.bindings.items():
+            self.bind(key, lambda el, kwarg=value: el.widget.config(**kwarg))
+
+
+class Canvas(tk.Canvas):
+    def __init__(self, window):
+        super().__init__(window,
+                         width=(config.COLUMN * 2 + 1) * config.SIZE_OF_CELL - constant_unnecessary_pixels,
+                         height=(config.ROW + 1) * config.SIZE_OF_CELL - constant_unnecessary_pixels)

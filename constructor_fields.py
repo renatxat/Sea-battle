@@ -5,7 +5,8 @@ from tkinter import messagebox
 import config
 from ship import Ship
 from battlefield_bot_view import BattlefieldBotOpponent
-from window import Window
+from wrappers import Window
+from wrappers import Button
 
 
 class ConstructorFields:
@@ -39,9 +40,8 @@ class ConstructorFields:
 
     def __add(self, x, y):
         self.__ship.append((x, y))
-        self.__buttons[y][x].config(command=None,
-                                    bg="slateblue",
-                                    state="disabled")
+        self.__buttons[y][x].config(command=0,
+                                    bg="medium purple")
 
     def __create_creation_window(self):
         canvas = tk.Canvas(self.__window,
@@ -50,12 +50,13 @@ class ConstructorFields:
         for i in range(config.ROW):
             temp = []
             for j in range(config.COLUMN):
-                btn = tk.Button(canvas,
-                                bg="aqua",
-                                width=config.SIZE_OF_CELL,
-                                height=config.SIZE_OF_CELL,
-                                borderwidth=1,
-                                activebackground='light gray')
+                btn = Button(canvas,
+                             state="normal",
+                             bg="aqua",
+                             width=config.SIZE_OF_CELL,
+                             height=config.SIZE_OF_CELL,
+                             borderwidth=1,
+                             highlightcolor="snow")
                 temp.append(btn)
             self.__buttons.append(temp)
         for i in range(config.ROW):
@@ -109,7 +110,7 @@ class ConstructorFields:
                 for x, y in self.__ship:
                     self.__real_field[y][x] = real_ship
                 for x, y in real_ship.get_environment():
-                    self.__buttons[y][x].config(command=None,
+                    self.__buttons[y][x].config(command=0,
                                                 bg="powderblue",
                                                 state="disabled")
                 self.__ship = []

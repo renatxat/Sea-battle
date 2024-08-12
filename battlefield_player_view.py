@@ -3,7 +3,7 @@ from PIL import ImageTk
 
 import config
 from battlefield import Battlefield
-from window import resource_path
+from wrappers import resource_path
 
 
 class BattlefieldPlayer(Battlefield):

@@ -7,7 +7,8 @@ from battlefield_bot import BattlefieldBotPlayer
 from battlefield_bot_view import BattlefieldBotOpponent
 from battlefield_player_view import BattlefieldPlayer
 from constructor_fields import ConstructorFields
-from window import Window
+from wrappers import Window
+from wrappers import Canvas
 
 
 class Application:
@@ -33,16 +34,7 @@ class Application:
             self.__is_closing = True
             return
         self.__window = Window(is_game_field=True)
-        if platform.startswith('darwin'):
-            constant_unnecessary_pixels = 6
-        elif platform.startswith('win'):
-            constant_unnecessary_pixels = 4
-        else:
-            constant_unnecessary_pixels = 2
-        # tkinter displays slightly differently on different OS ))
-        self.__canvas = tk.Canvas(self.__window,
-                                  width=(config.COLUMN * 2 + 1) * config.SIZE_OF_CELL - constant_unnecessary_pixels,
-                                  height=(config.ROW + 1) * config.SIZE_OF_CELL - constant_unnecessary_pixels)
+        self.__canvas = Canvas(self.__window)
         # the order in which the fields are created is very important
         # it has to do with filling the canvas with buttons
         self.__foreign_field = BattlefieldBotOpponent(is_only_generation=False, canvas=self.__canvas)

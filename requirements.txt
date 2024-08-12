@@ -1,4 +1,4 @@
 python3-tk; sys_platform == 'linux' or sys_platform == 'linux2'
+tkmacosx; sys_platform == 'darwin'
 python-tk; sys_platform == 'darwin'
 Pillow>=10.0.1
-tkmacosx; sys_platform == 'darwin'

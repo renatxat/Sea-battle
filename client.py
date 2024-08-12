@@ -127,7 +127,9 @@ class Client:
             return
         self.__window.destroy()
         self.__window = Window(is_game_field=True)
-        if platform.startswith('win') or platform.startswith('darwin'):
+        if platform.startswith('darwin'):
+            constant_unnecessary_pixels = 6
+        elif platform.startswith('win'):
             constant_unnecessary_pixels = 4
         else:
             constant_unnecessary_pixels = 2

@@ -7,6 +7,7 @@ from window import resource_path
 
 
 class BattlefieldOpponent(Battlefield):
+    # what the player sees from the left
     __canvas = ["tk.Canvas()"]
     # what the player sees
     __buttons = []
@@ -23,9 +24,12 @@ class BattlefieldOpponent(Battlefield):
             temp = []
             for j in range(config.COLUMN):
                 btn = tk.Button(self.__canvas,
+                                default="disabled",
                                 width=config.SIZE_OF_CELL,
                                 height=config.SIZE_OF_CELL,
-                                relief="groove")
+                                relief="groove",
+                                borderwidth=1,
+                                activebackground='light gray')
                 temp.append(btn)
             self.__buttons.append(temp)
         for i in range(config.ROW):
@@ -40,12 +44,15 @@ class BattlefieldOpponent(Battlefield):
                 if self._field[y][x] == "hit" and self.__buttons[y][x]["command"] != 0:
                     self.__buttons[y][x].config(command=0,
                                                 image=self.__image_hit,
+                                                default="normal",
                                                 relief="flat",
                                                 bg="crimson")
                 if self._field[y][x] == "miss" and self.__buttons[y][x]["command"] != 0:
                     self.__buttons[y][x].config(command=0,
+                                                default="normal",
                                                 image=self.__image_miss,
-                                                bg="light blue")
+                                                bg="light blue",
+                                                )
 
     def __shot_and_update(self, x, y):
         if self.__quantity_call_let_me_move:

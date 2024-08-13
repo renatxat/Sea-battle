@@ -1,5 +1,4 @@
 import tkinter as tk
-from sys import platform
 from tkinter import messagebox
 
 import config
@@ -13,7 +12,7 @@ from wrappers import Canvas
 
 class Application:
     __window = ["Window()"]
-    __canvas = ["tk.Canvas()"]
+    __canvas = ["Canvas()"]
 
     __field = ["BattlefieldPlayer"]
     __foreign_field = ["BattlefieldBotOpponent"]
@@ -34,7 +33,7 @@ class Application:
             self.__is_closing = True
             return
         self.__window = Window(is_game_field=True)
-        self.__canvas = Canvas(self.__window)
+        self.__canvas = Canvas(self.__window,small_canvas=False)
         # the order in which the fields are created is very important
         # it has to do with filling the canvas with buttons
         self.__foreign_field = BattlefieldBotOpponent(is_only_generation=False, canvas=self.__canvas)

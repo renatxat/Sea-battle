@@ -7,6 +7,7 @@ from ship import Ship
 from battlefield_bot_view import BattlefieldBotOpponent
 from wrappers import Window
 from wrappers import Button
+from wrappers import Canvas
 
 
 class ConstructorFields:
@@ -41,22 +42,21 @@ class ConstructorFields:
     def __add(self, x, y):
         self.__ship.append((x, y))
         self.__buttons[y][x].config(command=0,
-                                    bg="medium purple")
+                                    bg="medium purple",
+                                    activebackground="medium purple")
 
     def __create_creation_window(self):
-        canvas = tk.Canvas(self.__window,
-                           width=config.COLUMN * config.SIZE_OF_CELL - 2,
-                           height=config.ROW * config.SIZE_OF_CELL - 2)
+        canvas = Canvas(self.__window, small_canvas=True)
         for i in range(config.ROW):
             temp = []
             for j in range(config.COLUMN):
                 btn = Button(canvas,
                              state="normal",
                              bg="aqua",
+                             activebackground='snow',
                              width=config.SIZE_OF_CELL,
                              height=config.SIZE_OF_CELL,
-                             borderwidth=1,
-                             highlightcolor="snow")
+                             borderwidth=1)
                 temp.append(btn)
             self.__buttons.append(temp)
         for i in range(config.ROW):
@@ -88,6 +88,7 @@ class ConstructorFields:
                 for x, y in self.__ship:
                     self.__buttons[y][x].config(command=lambda a=x, b=y: self.__add(a, b),
                                                 bg="aqua",
+                                                activebackground='snow',
                                                 state="normal")
                 self.__ship = []
                 messagebox.showinfo(title="Ошибка ввода",
@@ -111,7 +112,8 @@ class ConstructorFields:
                     self.__real_field[y][x] = real_ship
                 for x, y in real_ship.get_environment():
                     self.__buttons[y][x].config(command=0,
-                                                bg="powderblue",
+                                                bg="powder blue",
+                                                activebackground="powder blue",
                                                 state="disabled")
                 self.__ship = []
 

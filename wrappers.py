@@ -1,6 +1,7 @@
 import tkinter as tk
 from _tkinter import TclError
 from tkinter import messagebox
+
 import os
 import sys
 
@@ -63,7 +64,7 @@ class Window(tk.Tk):
 if sys.platform.startswith("darwin"):
     constant_unnecessary_pixels = 6
     from tkmacosx import Button as OriginalButton
-elif sys.platform.startswith('win'):
+elif sys.platform.startswith("win"):
     constant_unnecessary_pixels = 4
     OriginalButton = tk.Button
 else:
@@ -74,14 +75,18 @@ else:
 
 class Button(OriginalButton):
     bindings = {
-        "<FocusIn>": {"default": "active"},  # for Keyboard focus
-        "<FocusOut>": {"default": "normal"},
         "<Enter>": {"state": "active"},  # for Mouse focus
-        "<Leave>": {"state": "normal"}
+        "<Leave>": {"state": "normal"},
+        "<Configure>": {"highlightbackground": "snow"}
     }
+    if sys.platform.startswith("darwin"):
+        bindings.update({"<Configure>": {"borderless": 1}})
+    else:
+        bindings.update({"<FocusIn>": {"default": "active"},  # for Keyboard focus
+                         "<FocusOut>": {"default": "normal"}})
 
-    def __init(self, *args, **kwargs):
-        super().__init__(self, *args, **kwargs)
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
         self.custom_responsive_button()
 
     def custom_responsive_button(self):
@@ -91,7 +96,14 @@ class Button(OriginalButton):
 
 
 class Canvas(tk.Canvas):
-    def __init__(self, window):
+    def __init__(self, window, small_canvas):
+        if small_canvas:
+            width = config.COLUMN * config.SIZE_OF_CELL - 2
+            height = config.ROW * config.SIZE_OF_CELL - 2
+        else:
+            width = (config.COLUMN * 2 + 1) * config.SIZE_OF_CELL - constant_unnecessary_pixels
+            height = (config.ROW + 1) * config.SIZE_OF_CELL - constant_unnecessary_pixels
+
         super().__init__(window,
-                         width=(config.COLUMN * 2 + 1) * config.SIZE_OF_CELL - constant_unnecessary_pixels,
-                         height=(config.ROW + 1) * config.SIZE_OF_CELL - constant_unnecessary_pixels)
+                         width=width,
+                         height=height)

@@ -3,7 +3,6 @@ import tkinter as tk
 from _tkinter import TclError
 from math import ceil
 from pickle import dumps, loads
-from sys import platform
 from threading import Thread
 from time import time
 from tkinter import messagebox
@@ -18,7 +17,7 @@ from wrappers import Canvas
 
 class Client:
     __window = ["Window()"]
-    __canvas = ["tk.Canvas()"]
+    __canvas = ["Canvas()"]
 
     __field = ["BattlefieldPlayer"]
     __foreign_field = ["BattlefieldOpponent"]
@@ -128,7 +127,7 @@ class Client:
             return
         self.__window.destroy()
         self.__window = Window(is_game_field=True)
-        self.__canvas = Canvas(self.__window)
+        self.__canvas = Canvas(self.__window, small_canvas=False)
         # the order in which the fields are created is very important
         # it has to do with filling the canvas with buttons
         self.__foreign_field = BattlefieldOpponent(self.__data_field, self.__canvas)

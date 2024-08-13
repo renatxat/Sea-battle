@@ -8,7 +8,7 @@ from wrappers import resource_path
 
 class BattlefieldPlayer(Battlefield):
     # what the player sees from the right
-    __canvas = ["tk.Canvas()"]
+    __canvas = ["Canvas()"]
     __labels = []
     __image_cross = "image.png"
     __image_dot = "image.png"

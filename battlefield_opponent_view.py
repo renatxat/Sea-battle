@@ -9,7 +9,7 @@ from wrappers import resource_path
 
 class BattlefieldOpponent(Battlefield):
     # what the player sees from the left
-    __canvas = ["tk.Canvas()"]
+    __canvas = ["Canvas()"]
     # what the player sees
     __buttons = []
     # for each cell we store 0 or its ship
@@ -28,7 +28,8 @@ class BattlefieldOpponent(Battlefield):
                              width=config.SIZE_OF_CELL,
                              height=config.SIZE_OF_CELL,
                              borderwidth=1,
-                             bg="floral white")
+                             bg="floral white",
+                             activebackground="papaya whip")
                 temp.append(btn)
             self.__buttons.append(temp)
         for i in range(config.ROW):

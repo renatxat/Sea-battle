@@ -34,7 +34,9 @@ coming soon...]: #
 если хотите запустить сервер локально (удалённый может не работать)]: #
 
 2) Пропишите в командной строке:
-```pip install -r requirements.txt```
+```pip install -r requirements.txt```\
+Если у вас macos, и команда выше выдала ошибку, пропишите дополнительно:
+```brew install python-tk```
 
 [```FOR /F %k in (requirements.txt) DO pip install %k``` для windows\
 ```cat requirements.txt | xargs -n 1 pip install``` для linux\

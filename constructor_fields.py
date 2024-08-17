@@ -31,7 +31,7 @@ class ConstructorFields:
     def __init__(self, is_need_for_randomness=False, presence_timer=False):
         if is_need_for_randomness:
             self.__is_need_for_randomness = True
-            self.__real_field = AutomaticArrangements().get_field()
+            self.__real_field = AutomaticArrangement().get_field()
             self.__is_ready = True
             return
         self.__presence_timer = presence_timer
@@ -166,7 +166,7 @@ class ConstructorFields:
         return False
 
 
-class AutomaticArrangements:
+class AutomaticArrangement:
     __real_field = [["zeros and Ships"]]
     __probability_field = [(int, int)]
     __dict_index_elem = {(int, int): int}

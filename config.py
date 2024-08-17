@@ -6,6 +6,10 @@ SIZE_OF_CELL = 32
 # size of each field cells in pixels
 SHIP_SIZES = [4, 3, 3, 2, 2, 2, 1, 1, 1, 1]
 # ship sizes in order of input
+BUTTON_INDENT = 10
+# numbers of pixels between text and frame in the button
+NUMBER_OF_SHOTS_FIELDS_ONLY_HITS = 8
+# needed to make the bot hit more often; the more this, the more accurate the bot
 TIME_WAITING_BOT_MOVE = 800  # 0.8 seconds
 # quantity milliseconds for move bot in game with bot
 TIME_WAITING_MOVE = 15
@@ -22,6 +26,8 @@ MEMORY_LIMIT_STR = 128
 # quantity bytes to send string
 MEMORY_LIMIT_TUPLE = 256
 # quantity bytes to send tuple
+LOADING_ICON_UPDATE_PERIOD = 0.4
+# period of replacement symbol from |,/,–,\ (only style)
 HOST = 'localhost'
 # HOST = '194.58.120.40'
-PORT = 2005
+PORT = 50006

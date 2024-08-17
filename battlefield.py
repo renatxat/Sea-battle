@@ -28,7 +28,7 @@ class Battlefield:
         elif isinstance(self._field[y][x], int):
             self._field[y][x] = 'miss'
 
-    def presence_of_changes(self):
+    def get_changes(self):
         return self._existence_of_raw_shot
 
     def get_last_shot(self):

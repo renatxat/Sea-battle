@@ -1,0 +1,12 @@
+.git
+
+%SystemDrive%
+.idea
+__pycache__
+
+dist
+build
+
+test_client.py
+test_server.py
+test.py

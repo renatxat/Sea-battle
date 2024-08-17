@@ -2,12 +2,14 @@ import tkinter as tk
 from PIL import ImageTk
 
 import config
+from wrappers import Button
 from battlefield import Battlefield
-from window import resource_path
+from wrappers import resource_path
+
 
 class BattlefieldOpponent(Battlefield):
-    __canvas = ["tk.Canvas()"]
-    # what the player sees
+    """what the player sees from the left"""
+    __canvas = ["Canvas()"]
     __buttons = []
     # for each cell we store 0 or its ship
     __image_hit = "image.png"
@@ -21,10 +23,12 @@ class BattlefieldOpponent(Battlefield):
         for i in range(config.ROW):
             temp = []
             for j in range(config.COLUMN):
-                btn = tk.Button(self.__canvas,
-                                width=config.SIZE_OF_CELL,
-                                height=config.SIZE_OF_CELL,
-                                relief="groove")
+                btn = Button(self.__canvas,
+                             width=config.SIZE_OF_CELL,
+                             height=config.SIZE_OF_CELL,
+                             borderwidth=1,
+                             bg="floral white",
+                             activebackground="papaya whip")
                 temp.append(btn)
             self.__buttons.append(temp)
         for i in range(config.ROW):
@@ -37,14 +41,18 @@ class BattlefieldOpponent(Battlefield):
         for x in range(config.COLUMN):
             for y in range(config.ROW):
                 if self._field[y][x] == "hit" and self.__buttons[y][x]["command"] != 0:
-                    self.__buttons[y][x].config(bg="crimson",
-                                                command=0,
+                    self.__buttons[y][x].config(command=0,
                                                 image=self.__image_hit,
-                                                relief="flat")
+                                                relief="flat",
+                                                bg="crimson",
+                                                activebackground="crimson")
                 if self._field[y][x] == "miss" and self.__buttons[y][x]["command"] != 0:
-                    self.__buttons[y][x].config(bg="light blue",
-                                                command=0,
-                                                image=self.__image_miss)
+                    self.__buttons[y][x].config(command=0,
+                                                image=self.__image_miss,
+                                                relief="flat",
+                                                bg="light blue",
+                                                activebackground="light blue")
+
     def __shot_and_update(self, x, y):
         if self.__quantity_call_let_me_move:
             self._shot(x, y)
@@ -53,7 +61,7 @@ class BattlefieldOpponent(Battlefield):
     def __create_buttons(self):
         for i in range(config.ROW):
             for j in range(config.COLUMN):
-                self.__buttons[i][j].pack(side="left",
+                self.__buttons[i][j].pack(side="bottom",
                                           fill=None,
                                           expand=False)
                 self.__canvas.create_window((j * config.SIZE_OF_CELL, i * config.SIZE_OF_CELL),

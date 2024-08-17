@@ -5,6 +5,7 @@ from battlefield import Battlefield
 
 
 class BattlefieldBotPlayer(Battlefield):
+    """makes move randomly"""
 
     def take_a_shot(self):
         probability_field = []

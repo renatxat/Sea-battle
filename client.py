@@ -105,7 +105,7 @@ class Client:
             return
         start_time = time() + 1 - is_need_for_randomness
         # 1 second for drawing constructor_field
-        constructor_field = ConstructorFields(presence_timer=True, is_need_for_randomness=is_need_for_randomness)
+        constructor_field = ConstructorFields(is_need_for_randomness=is_need_for_randomness, presence_timer=True, )
         constructor_field = constructor_field.get()
         while self.__is_my_first_move == "waiting":
             pass
@@ -127,7 +127,7 @@ class Client:
             return
         self.__window.destroy()
         self.__window = Window(is_game_field=True)
-        self.__canvas = Canvas(self.__window, small_canvas=False)
+        self.__canvas = Canvas(self.__window, number_of_fields=2)
         # the order in which the fields are created is very important
         # it has to do with filling the canvas with buttons
         self.__foreign_field = BattlefieldOpponent(self.__data_field, self.__canvas)
@@ -233,7 +233,7 @@ class Client:
         self.__check_game_over(n)
 
     def __click_processing(self):
-        if self.__foreign_field.presence_of_changes() and self.__label_turn["fg"] == "green2":
+        if self.__foreign_field.get_changes() and self.__label_turn["fg"] == "green2":
             self.__sock.send(bytes(self.__foreign_field.get_last_shot()))
             if not self.__foreign_field.existence_hit_last_shot():
                 self.__text_before_timer = "Ход противника"

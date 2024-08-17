@@ -96,8 +96,8 @@ class Button(OriginalButton):
 
 
 class Canvas(tk.Canvas):
-    def __init__(self, window, small_canvas):
-        if small_canvas:
+    def __init__(self, window, number_of_fields):
+        if number_of_fields == 1:
             width = config.COLUMN * config.SIZE_OF_CELL - 2
             height = config.ROW * config.SIZE_OF_CELL - 2
         else:

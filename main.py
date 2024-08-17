@@ -89,4 +89,5 @@ class Menu:
             Client(is_need_for_randomness)
 
 
-Menu()
+if __name__ == "__main__":
+    Menu()

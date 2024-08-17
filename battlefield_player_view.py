@@ -7,7 +7,7 @@ from wrappers import resource_path
 
 
 class BattlefieldPlayer(Battlefield):
-    # what the player sees from the right
+    """what the player sees from the right"""
     __canvas = ["Canvas()"]
     __labels = []
     __image_cross = "image.png"
@@ -27,7 +27,7 @@ class BattlefieldPlayer(Battlefield):
                                width=config.SIZE_OF_CELL,
                                height=config.SIZE_OF_CELL,
                                relief="groove",
-                               bg="slateblue" if real_field[i][j] != 0 else "aqua")
+                               bg="slate blue" if real_field[i][j] != 0 else "aqua")
                 temp.append(lbl)
             self.__labels.append(temp)
         self.__image_cross = ImageTk.PhotoImage(file=resource_path("src/cross.png"))
@@ -36,7 +36,7 @@ class BattlefieldPlayer(Battlefield):
     def __create_labels(self):
         for i in range(config.ROW):
             for j in range(config.COLUMN + 1):
-                self.__labels[i][j].pack(expand=False, side="top")
+                self.__labels[i][j].pack(expand=False, fill=None, side="top")
                 self.__canvas.create_window(
                     (j * config.SIZE_OF_CELL + config.COLUMN *
                      config.SIZE_OF_CELL, i * config.SIZE_OF_CELL),
@@ -56,8 +56,7 @@ class BattlefieldPlayer(Battlefield):
                        justify="center",
                        borderwidth=1)
         lbl.pack(fill="both", expand=True)
-        self.__canvas.create_window(((2 * config.COLUMN + 1) * config.SIZE_OF_CELL -
-                                     ((2 * config.COLUMN + 1) * config.SIZE_OF_CELL // 3),
+        self.__canvas.create_window((((2 * config.COLUMN + 1) * config.SIZE_OF_CELL // 3) * 2,
                                      config.ROW * config.SIZE_OF_CELL),
                                     anchor="nw",
                                     window=label_frame)
@@ -73,9 +72,9 @@ class BattlefieldPlayer(Battlefield):
                                                    relief="flat",
                                                    bg="orange")
                 elif self._field[y][x] == "hit" and self.__labels[y][x + 1]["image"] != "":
-                    self.__labels[y][x + 1].config(bg="slateblue")
+                    self.__labels[y][x + 1].config(bg="slate blue")
                 if self._field[y][x] == "miss" and self.__labels[y][x + 1]["image"] == "":
                     self.__labels[y][x + 1].config(image=self.__image_dot,
-                                                   bg="limegreen")
+                                                   bg="lime green")
                 elif self._field[y][x] == "miss" and self.__labels[y][x + 1]["image"] != "":  # last move
                     self.__labels[y][x + 1].config(bg="aqua")

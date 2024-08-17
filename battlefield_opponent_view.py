@@ -8,9 +8,8 @@ from wrappers import resource_path
 
 
 class BattlefieldOpponent(Battlefield):
-    # what the player sees from the left
+    """what the player sees from the left"""
     __canvas = ["Canvas()"]
-    # what the player sees
     __buttons = []
     # for each cell we store 0 or its ship
     __image_hit = "image.png"
@@ -62,7 +61,7 @@ class BattlefieldOpponent(Battlefield):
     def __create_buttons(self):
         for i in range(config.ROW):
             for j in range(config.COLUMN):
-                self.__buttons[i][j].pack(side="left",
+                self.__buttons[i][j].pack(side="bottom",
                                           fill=None,
                                           expand=False)
                 self.__canvas.create_window((j * config.SIZE_OF_CELL, i * config.SIZE_OF_CELL),

@@ -22,6 +22,7 @@ Pyinstaller.
 ```chmod +x ./game/macos/sea-battle && ./game/macos/sea-battle```
 - Если не сработало, то воспользуйтесь одним из вариантов ниже
 
+
 [### Medium:
 Bash script.
 coming soon...]: #
